@@ -45,7 +45,7 @@ function ParamsPicker({
               size={size}
               fullWidth
               id="outlined-basic"
-              label="Parametro"
+              label="Detail"
               variant="outlined"
               value={item.name}
               onChange={(e) => modifyItem(index, "name", e.target.value)}
@@ -54,7 +54,7 @@ function ParamsPicker({
               size={size}
               fullWidth
               id="outlined-basic"
-              label="Valor"
+              label="Value"
               variant="outlined"
               value={item.value}
               onChange={(e) => modifyItem(index, "value", e.target.value)}
@@ -62,8 +62,8 @@ function ParamsPicker({
           </Box>
         ))
       }
-      <Button color="secondary" size='small' variant="contained" onClick={() => addNewProp()}>Agregar</Button>
-      {paramsForm.length > 1 && <Button color="secondary" size='small' variant="contained" onClick={() => removeNewProp()}>Quitar</Button>}
+      <Button color="secondary" size='small' variant="contained" onClick={() => addNewProp()}>Add</Button>
+      {paramsForm.length > 1 && <Button color="secondary" size='small' variant="contained" onClick={() => removeNewProp()}>Remove</Button>}
     </Box>
   )
 }
@@ -136,7 +136,7 @@ const Mercar = forwardRef(function Mercar({ }, ref) {
                   </Box>
                 </Box>
                 <Box style={{ padding: 10, width: "100%" }}>
-                  <h4>Parametros de la relación</h4>
+                  <h4>Bind details</h4>
                   <ParamsPicker
                     size="small"
                     initialLabel="Relation"
@@ -151,8 +151,8 @@ const Mercar = forwardRef(function Mercar({ }, ref) {
         }
       </Box>
       <Box display="flex">
-        <Button color="secondary" size='small' variant="contained" onClick={() => addRelation()}>Vincular</Button>
-        {purchase.length > 1 && <Button color="secondary" size='small' variant="contained" onClick={() => removeRelation()}>Quitar</Button>}
+        <Button color="secondary" size='small' variant="contained" onClick={() => addRelation()}>Add</Button>
+        {purchase.length > 1 && <Button color="secondary" size='small' variant="contained" onClick={() => removeRelation()}>Remove</Button>}
       </Box>
     </Box>
   )
@@ -226,7 +226,7 @@ export default function Prototype() {
         <TextField
           fullWidth
           id="outlined-basic"
-          label="Nombre"
+          label="Name"
           name="name"
           variant="outlined"
           value={formInsumo["name"]}
@@ -234,7 +234,7 @@ export default function Prototype() {
         />
       </Box>
       <Box mb={2}>
-        <h4>Parametros del objeto</h4>
+        <h4>Details</h4>
         <ParamsPicker
           initialLabel="Param"
           paramsForm={paramsForm}
@@ -242,11 +242,10 @@ export default function Prototype() {
         />
       </Box>
       <Box mb={2}>
-        {/* <Asynchronous label="tipo" /> */}
         <TextField
           fullWidth
           id="outlined-basic"
-          label="Tipo"
+          label="Label"
           name="type"
           variant="outlined"
           value={formInsumo["type"]}
@@ -257,7 +256,7 @@ export default function Prototype() {
         <TextField
           fullWidth
           id="outlined-basic"
-          label="Codigo"
+          label="Code"
           name="code"
           variant="outlined"
           value={formInsumo["code"]}
@@ -265,7 +264,7 @@ export default function Prototype() {
         />
       </Box>
       <FormControl fullWidth>
-        <InputLabel id="demo-simple-select-label">Tipo</InputLabel>
+        <InputLabel id="demo-simple-select-label">Mode</InputLabel>
         <Select
           labelId="demo-simple-select-label"
           id="demo-simple-select"
@@ -273,7 +272,7 @@ export default function Prototype() {
           label="itemType"
           onChange={handleChange}
         >
-          <MenuItem value={"fundamental"}>Elemento fundamental</MenuItem>
+          <MenuItem value={"fundamental"}>Supply</MenuItem>
           <MenuItem value={"shopping"}>Mercar</MenuItem>
           {/* <MenuItem value={"int_std"}>Estándar internacional</MenuItem>
           <MenuItem value={"formula_optional"}>Fórmula a veces</MenuItem>
@@ -287,7 +286,7 @@ export default function Prototype() {
         itemType === "shopping" && <Mercar ref={mercarRef} />
       }
       <Box pt={5}>
-        <Button color="primary" variant="contained" disabled={disabledButton} onClick={() => handleSubmitFullForm()}>GUARDAR</Button>
+        <Button color="primary" variant="contained" disabled={disabledButton} onClick={() => handleSubmitFullForm()}>Save</Button>
       </Box>
     </Box>
   )

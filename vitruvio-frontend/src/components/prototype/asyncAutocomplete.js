@@ -68,7 +68,7 @@ export default function AsyncAutocomplete({ value, setValue }) {
             setCurrentText(e.target.value)
           }}
           name="nodeRelated"
-          label="Relacion"
+          label="Bind"
           value={value}
           helperText="Presione ENTER para buscar"
           InputProps={{

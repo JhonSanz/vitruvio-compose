@@ -65,7 +65,7 @@ function ShowNodeDetails({ data, incomingEdges, setIncomingEdges }) {
   return (
     <div>
       <div style={{ display: "flex" }}>
-        <h4>Detailed node</h4>
+        <h4>{data.name}</h4>
         {
           confirmDelete && <div style={{ display: "flex" }}>
             <IconButton aria-label="delete" color="error">
@@ -90,7 +90,7 @@ function ShowNodeDetails({ data, incomingEdges, setIncomingEdges }) {
           </div>
         ))}
       </div><br />
-      <h4>Relaciones actuales</h4>
+      <h4>Current bindings</h4>
       <div style={{ border: "1px dotted black" }}>
         {
           incomingEdges.map((item, index) => (
@@ -120,7 +120,7 @@ function ShowNodeDetails({ data, incomingEdges, setIncomingEdges }) {
           ))
         }
       </div><br />
-      <h4>Relaciones nuevas</h4>
+      <h4>New bindings</h4>
       <Mercar ref={mercarRef} />
       <br />
       <Button color="primary" variant="contained" onClick={() => handleSetNewRelations()}>Guardar</Button>
