@@ -1,0 +1,47 @@
+version: '3.8'
+
+services: 
+  frontend:
+    build:
+      context: ./vitruvio-frontend
+      dockerfile: dockerfile
+    container_name: vitruvio-frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+
+  backend:
+    build:
+      context: ./vitruvio-backend/backend
+      dockerfile: backend.Dockerfile
+    container_name: vitruvio-backend
+    ports:
+      - "8000:8000"
+    depends_on:
+      graph-database:
+        condition: service_started
+    restart: on-failure
+    environment:
+      - NEO4J_USER=neo4j
+      - NEO4J_PASSWORD=your_password_here
+    volumes:
+      - ./vitruvio-backend/backend:/backend
+
+  graph-database:
+    image: neo4j:5.5
+    container_name: graph-database
+    ports:
+      - "7474:7474"
+      - "7687:7687"
+    environment:
+      - NEO4J_AUTH=neo4j/your_password_here
+    volumes:
+      - neo4j_data:/data
+      - neo4j_logs:/logs
+      - neo4j_conf:/conf
+
+volumes:
+  neo4j_data:
+  neo4j_logs:
+  neo4j_conf:

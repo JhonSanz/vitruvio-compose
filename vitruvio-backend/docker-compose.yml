@@ -1,0 +1,17 @@
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: backend.Dockerfile
+    container_name: dev-vitruvio-backend
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_started
+    restart: on-failure
+    env_file:
+      - ./compose/dev/backend.env
+      - ./compose/dev/database.env
+    volumes:
+      - ./backend:/backend
