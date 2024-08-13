@@ -1,7 +1,8 @@
 "use client";
 
-import { forwardRef, useImperativeHandle, useRef } from 'react';
+import { forwardRef, useImperativeHandle, useRef, useContext } from 'react';
 import { useState, useEffect } from 'react';
+import { ThemeContext } from '@/components/providers';
 import Box from '@mui/material/Box';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
@@ -12,12 +13,125 @@ import fetchBackend from "@/utils/commonFetch";
 import AsyncAutocomplete from '@/components/prototype/asyncAutocomplete';
 import Button from '@mui/material/Button';
 
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import ListItemButton from '@mui/material/ListItemButton';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import ListItemText from '@mui/material/ListItemText';
+
+function UnitsPicker() {
+  const [selectedType, setSelectedType] = useState(undefined);
+  const [selectedUnit, setSelectedUnit] = useState(undefined);
+  const [availableUnits, setAvailableUnits] = useState([]);
+  const units_types = [
+    { name: "longitud" },
+    { name: "masa" },
+    { name: "tiempo" },
+  ]
+
+  async function getUnits() {
+    if (selectedType.name === "longitud") {
+      return [
+        { name: "metro", symbol: "m" },
+        { name: "decimetro", symbol: "dm" },
+        { name: "kilometro", symbol: "km" },
+      ]
+    }
+    if (selectedType.name === "masa") {
+      return [
+        { name: "gramo", symbol: "g" },
+        { name: "decigramo", symbol: "dg" },
+        { name: "kilogramo", symbol: "kg" },
+      ]
+    }
+    if (selectedType.name === "tiempo") {
+      return [
+        { name: "milisegundo", symbol: "ms" },
+        { name: "segundo", symbol: "s" },
+        { name: "microsegundo", symbol: "μs" },
+      ]
+    }
+  }
+
+  useEffect(() => {
+    async function init() {
+      if (selectedType) {
+        const units = await getUnits();
+        setAvailableUnits(units);
+      }
+    }
+    init();
+  }, [selectedType]);
+
+  return (
+    <Box>
+      <Box mr={1}>
+        <TextField
+          size="small"
+          id="outlined-basic"
+          label="Name"
+          variant="outlined"
+          type='number'
+        // value={item.name}
+        // onChange={(e) => {}}
+        />
+      </Box>
+      <Box display="flex" marginBottom={5}>
+        <Box width="100%">
+          <h3>Tipos</h3>
+          <List style={{ border: "1px dotted gray", marginRight: "30px" }}>
+            {
+              units_types.map(item => (
+                <ListItem disablePadding>
+                  <ListItemButton selected={selectedType?.name === item.name} onClick={() => setSelectedType(item)}>
+                    <ListItemText primary={item.name} />
+                  </ListItemButton>
+                </ListItem>
+              ))
+            }
+          </List>
+        </Box>
+        <Box width="100%">
+          <h3>Unidades</h3>
+          <List style={{ border: "1px dotted gray", marginRight: "30px" }}>
+            {
+              availableUnits.map(item => (
+                <ListItem disablePadding>
+                  <ListItemButton selected={selectedUnit?.name === item.name} onClick={() => setSelectedUnit(item)}>
+                    <ListItemText primary={item.name} />
+                  </ListItemButton>
+                </ListItem>
+              ))
+            }
+          </List>
+        </Box>
+      </Box>
+      <Box display="flex" alignItems="center">
+        <Box mr={1}>
+          <TextField
+            size="small"
+            id="outlined-basic"
+            label="Value"
+            variant="outlined"
+            type='number'
+          // value={item.name}
+          // onChange={(e) => {}}
+          />
+        </Box>
+        <Box>{selectedUnit?.symbol}</Box>
+      </Box>
+    </Box>
+  )
+}
+
 
 function ParamsPicker({
   size = "medium",
   paramsForm,
   setParamsForm,
 }) {
+  const { setAlertContent } = useContext(ThemeContext);
+
   function addNewProp() {
     setParamsForm([...paramsForm, { name: "", value: "" }])
   }
@@ -34,6 +148,11 @@ function ParamsPicker({
     copiedDataItem[field] = value;
     copiedData.splice(index, 1, copiedDataItem);
     setParamsForm(copiedData);
+  }
+
+
+  function showUnitsPicker() {
+    setAlertContent(<UnitsPicker />)
   }
 
   return (
@@ -62,6 +181,7 @@ function ParamsPicker({
           </Box>
         ))
       }
+      <Button color="error" size='small' variant="contained" onClick={() => showUnitsPicker()}>test</Button>
       <Button color="secondary" size='small' variant="contained" onClick={() => addNewProp()}>Add</Button>
       {paramsForm.length > 1 && <Button color="secondary" size='small' variant="contained" onClick={() => removeNewProp()}>Remove</Button>}
     </Box>
