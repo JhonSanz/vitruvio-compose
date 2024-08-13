@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from app.database.models import Unit
+from backend.app.database.models import Unit
 
 
 def get_unit(*, db: Session, unit_id: int):

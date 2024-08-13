@@ -1,8 +1,8 @@
 from typing import List
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from app.database.connection import get_db
-from app.api.crud import unit as crud_unit
+from backend.app.database.connection import get_db
+from backend.app.api.crud import unit as crud_unit
 from backend.app.api.schemas.unit import Unit, UnitCreate
 
 router = APIRouter()
