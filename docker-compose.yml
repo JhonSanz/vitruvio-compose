@@ -28,6 +28,22 @@ services:
     volumes:
       - ./vitruvio-backend/backend:/backend
 
+  units:
+    build:
+      context: ./vitruvio-uis/backend
+      dockerfile: dockerfile
+    container_name: vitruvio-uis
+    ports:
+      - "8001:8001"
+    depends_on:
+      graph-database:
+        condition: service_started
+    restart: on-failure
+    environment:
+      - DATABASE_URL=sqlite:///./my_database.db
+    volumes:
+      - ./vitruvio-uis/backend:/backend
+
   graph-database:
     image: neo4j:5.5
     container_name: graph-database
