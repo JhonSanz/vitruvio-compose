@@ -3,8 +3,9 @@ async function fetchBackend(
   method,
   bodyData = {},
   queryUrl = {},
+  url = "http://localhost:8000",
 ) {
-  const URL = process.env.NEXT_PUBLIC_NODE_BACKEND_URL || "http://localhost:8000"
+  const URL = process.env.NEXT_PUBLIC_NODE_BACKEND_URL || url
 
   function objectToQueryString(obj) {
     return Object.entries(obj)

@@ -23,11 +23,7 @@ function UnitsPicker({ handleAddNewItem }) {
   const [selectedType, setSelectedType] = useState(undefined);
   const [selectedUnit, setSelectedUnit] = useState(undefined);
   const [availableUnits, setAvailableUnits] = useState([]);
-  const units_types = [
-    { name: "Longitud" },
-    { name: "Masa" },
-    { name: "Tiempo" },
-  ]
+  const [unitTypes, setUnitTypes] = useState([]);
   const [formValues, setFormValues] = useState({});
 
   function handleFormChange(e) {
@@ -36,35 +32,37 @@ function UnitsPicker({ handleAddNewItem }) {
     setFormValues(copiedForm);
   }
 
-  async function getUnits() {
-    if (selectedType.name === "Longitud") {
-      return [
-        { name: "metro", symbol: "m" },
-        { name: "decimetro", symbol: "dm" },
-        { name: "kilometro", symbol: "km" },
-      ]
-    }
-    if (selectedType.name === "Masa") {
-      return [
-        { name: "gramo", symbol: "g" },
-        { name: "decigramo", symbol: "dg" },
-        { name: "kilogramo", symbol: "kg" },
-      ]
-    }
-    if (selectedType.name === "Tiempo") {
-      return [
-        { name: "milisegundo", symbol: "ms" },
-        { name: "segundo", symbol: "s" },
-        { name: "microsegundo", symbol: "μs" },
-      ]
-    }
-  }
-
   function handleSubmit() {
     if (formValues.name && formValues.value) handleAddNewItem({
       ...formValues, value: `${formValues.value}${selectedUnit.symbol}`
     });
   }
+
+  async function getUnits() {
+    try {
+      const result = await fetchBackend(`/units/unit_by_type/${selectedType.id}`, "GET", {}, {}, "http://localhost:8001");
+      return result
+    } catch (error) {
+      console.error('Error fetching root nodes:', error);
+    }
+  }
+
+  async function getUnitTypes() {
+    try {
+      const result = await fetchBackend("/unit_type", "GET", {}, {}, "http://localhost:8001");
+      return result
+    } catch (error) {
+      console.error('Error fetching root nodes:', error);
+    }
+  }
+
+  useEffect(() => {
+    async function init() {
+      const unit_types = await getUnitTypes();
+      setUnitTypes(unit_types);
+    }
+    init();
+  }, []);
 
   useEffect(() => {
     async function init() {
@@ -94,7 +92,7 @@ function UnitsPicker({ handleAddNewItem }) {
           <h3>Tipos</h3>
           <List style={{ border: "1px dotted gray", marginRight: "30px" }}>
             {
-              units_types.map(item => (
+              unitTypes.map(item => (
                 <ListItem disablePadding>
                   <ListItemButton selected={selectedType?.name === item.name} onClick={() => setSelectedType(item)}>
                     <ListItemText primary={item.name} />
@@ -149,22 +147,10 @@ function ParamsPicker({
 }) {
   const { setAlertContent, setIsAlertOpened } = useContext(ThemeContext);
 
-  function addNewProp() {
-    setParamsForm([...paramsForm, { name: "", value: "" }])
-  }
-
   function removeNewProp() {
     const copied = [...paramsForm];
     copied.splice(-1, 1)
     setParamsForm(copied)
-  }
-
-  function modifyItem(index, field, value) {
-    const copiedData = [...paramsForm];
-    const copiedDataItem = copiedData[index];
-    copiedDataItem[field] = value;
-    copiedData.splice(index, 1, copiedDataItem);
-    setParamsForm(copiedData);
   }
 
   function handleAddNewItem(newItem) {
