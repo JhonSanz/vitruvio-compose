@@ -4,13 +4,18 @@ from pydantic import BaseModel
 class UnitBase(BaseModel):
     name: str
     symbol: str
+    unit_type_id: int
 
 
 class UnitCreate(UnitBase):
     pass
 
 
-class Unit(UnitBase):
+class UnitUpdate(UnitBase):
+    pass
+
+
+class UnitInDB(UnitBase):
     id: int
 
     class Config:

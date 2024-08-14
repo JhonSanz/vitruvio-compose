@@ -11,6 +11,17 @@ from typing import List
 from .connection import Base
 
 
-class Unit(Base):
-    __tablename__ = "Unit"
+class UnitType(Base):
+    __tablename__ = "unit_type"
     id: Mapped[int] = mapped_column(primary_key=True)
+    name: Mapped[str] = mapped_column(String(100))
+    unit: Mapped[List["Unit"]] = relationship(back_populates="unit_type")
+    
+
+class Unit(Base):
+    __tablename__ = "unit"
+    id: Mapped[int] = mapped_column(primary_key=True)
+    name: Mapped[str] = mapped_column(String(100))
+    symbol: Mapped[str] = mapped_column(String(100))
+    unit_type_id: Mapped[int] = mapped_column(Integer, ForeignKey("unit_type.id"))
+    unit_type: Mapped["UnitType"] = relationship("UnitType", back_populates="unit")
