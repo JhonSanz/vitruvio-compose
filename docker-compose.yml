@@ -23,6 +23,7 @@ services:
         condition: service_started
     restart: on-failure
     environment:
+      - HOST=graph-database
       - NEO4J_USER=neo4j
       - NEO4J_PASSWORD=your_password_here
     volumes:

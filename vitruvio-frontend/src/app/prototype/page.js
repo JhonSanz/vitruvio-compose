@@ -19,38 +19,51 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 
-function UnitsPicker() {
+function UnitsPicker({ handleAddNewItem }) {
   const [selectedType, setSelectedType] = useState(undefined);
   const [selectedUnit, setSelectedUnit] = useState(undefined);
   const [availableUnits, setAvailableUnits] = useState([]);
   const units_types = [
-    { name: "longitud" },
-    { name: "masa" },
-    { name: "tiempo" },
+    { name: "Longitud" },
+    { name: "Masa" },
+    { name: "Tiempo" },
   ]
+  const [formValues, setFormValues] = useState({});
+
+  function handleFormChange(e) {
+    const copiedForm = { ...formValues };
+    copiedForm[e.target.name] = e.target.value;
+    setFormValues(copiedForm);
+  }
 
   async function getUnits() {
-    if (selectedType.name === "longitud") {
+    if (selectedType.name === "Longitud") {
       return [
         { name: "metro", symbol: "m" },
         { name: "decimetro", symbol: "dm" },
         { name: "kilometro", symbol: "km" },
       ]
     }
-    if (selectedType.name === "masa") {
+    if (selectedType.name === "Masa") {
       return [
         { name: "gramo", symbol: "g" },
         { name: "decigramo", symbol: "dg" },
         { name: "kilogramo", symbol: "kg" },
       ]
     }
-    if (selectedType.name === "tiempo") {
+    if (selectedType.name === "Tiempo") {
       return [
         { name: "milisegundo", symbol: "ms" },
         { name: "segundo", symbol: "s" },
         { name: "microsegundo", symbol: "μs" },
       ]
     }
+  }
+
+  function handleSubmit() {
+    if (formValues.name && formValues.value) handleAddNewItem({
+      ...formValues, value: `${formValues.value}${selectedUnit.symbol}`
+    });
   }
 
   useEffect(() => {
@@ -71,9 +84,9 @@ function UnitsPicker() {
           id="outlined-basic"
           label="Name"
           variant="outlined"
-          type='number'
-        // value={item.name}
-        // onChange={(e) => {}}
+          name="name"
+          value={formValues["name"]}
+          onChange={(e) => handleFormChange(e)}
         />
       </Box>
       <Box display="flex" marginBottom={5}>
@@ -114,11 +127,15 @@ function UnitsPicker() {
             label="Value"
             variant="outlined"
             type='number'
-          // value={item.name}
-          // onChange={(e) => {}}
+            name="value"
+            value={formValues["value"]}
+            onChange={(e) => handleFormChange(e)}
           />
         </Box>
         <Box>{selectedUnit?.symbol}</Box>
+      </Box>
+      <Box mt={2}>
+        <Button color="primary" size='small' variant="contained" onClick={() => handleSubmit()}>Ok</Button>
       </Box>
     </Box>
   )
@@ -130,7 +147,7 @@ function ParamsPicker({
   paramsForm,
   setParamsForm,
 }) {
-  const { setAlertContent } = useContext(ThemeContext);
+  const { setAlertContent, setIsAlertOpened } = useContext(ThemeContext);
 
   function addNewProp() {
     setParamsForm([...paramsForm, { name: "", value: "" }])
@@ -150,40 +167,35 @@ function ParamsPicker({
     setParamsForm(copiedData);
   }
 
+  function handleAddNewItem(newItem) {
+    setParamsForm([...paramsForm, newItem])
+    setIsAlertOpened(false);
+  }
 
   function showUnitsPicker() {
-    setAlertContent(<UnitsPicker />)
+    setAlertContent(<UnitsPicker handleAddNewItem={handleAddNewItem} />)
   }
 
   return (
     <Box style={{ padding: "20px", border: "1px dotted gray" }}>
       {
+        paramsForm.length > 0 && (
+          <Box style={{ display: "flex", marginBottom: "15px", borderBottom: "1px solid #bfbfbf", paddingBottom: "13px" }}>
+            <Box width="100%">Detail</Box>
+            <Box width="100%">Value</Box>
+          </Box>
+        )
+      }
+      {
         paramsForm.map((item, index) => (
-          <Box style={{ display: "flex", marginBottom: "15px" }}>
-            <TextField
-              size={size}
-              fullWidth
-              id="outlined-basic"
-              label="Detail"
-              variant="outlined"
-              value={item.name}
-              onChange={(e) => modifyItem(index, "name", e.target.value)}
-            />
-            <TextField
-              size={size}
-              fullWidth
-              id="outlined-basic"
-              label="Value"
-              variant="outlined"
-              value={item.value}
-              onChange={(e) => modifyItem(index, "value", e.target.value)}
-            />
+          <Box style={{ display: "flex", marginBottom: "15px", borderBottom: "1px solid #e3e3e3", paddingBottom: "13px" }}>
+            <Box width="100%">{item.name}</Box>
+            <Box width="100%">{item.value}</Box>
           </Box>
         ))
       }
-      <Button color="error" size='small' variant="contained" onClick={() => showUnitsPicker()}>test</Button>
-      <Button color="secondary" size='small' variant="contained" onClick={() => addNewProp()}>Add</Button>
-      {paramsForm.length > 1 && <Button color="secondary" size='small' variant="contained" onClick={() => removeNewProp()}>Remove</Button>}
+      <Button color="secondary" size='small' variant="contained" onClick={() => showUnitsPicker()}>Add</Button>
+      {paramsForm.length >= 1 && <Button color="secondary" size='small' variant="contained" onClick={() => removeNewProp()}>Remove</Button>}
     </Box>
   )
 }
@@ -192,7 +204,7 @@ const Mercar = forwardRef(function Mercar({ }, ref) {
   const [purchase, setPurchase] = useState([
     {
       related: {},
-      params: [{ name: "", value: "" }]
+      params: []
     }
   ]);
 
@@ -224,7 +236,7 @@ const Mercar = forwardRef(function Mercar({ }, ref) {
     setPurchase([
       ...purchase, {
         related: {},
-        params: [{ name: "", value: "" }]
+        params: []
       }
     ])
   }
@@ -299,9 +311,7 @@ export default function Prototype() {
     setFormInsumo(copiedFormInsumo);
   }
 
-  const [paramsForm, setParamsForm] = useState([
-    { name: "", value: "" }
-  ]);
+  const [paramsForm, setParamsForm] = useState([]);
 
   async function handleSubmitFullForm() {
     setDisabledButton(true);

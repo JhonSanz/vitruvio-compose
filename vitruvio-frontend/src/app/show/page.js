@@ -12,6 +12,8 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import convertObject from '@/utils/transformObject';
 import CloseIcon from '@mui/icons-material/Close';
 import CheckIcon from '@mui/icons-material/Check';
+import ModalApp from '@/components/modal';
+
 
 function ShowNodeDetails({ data, incomingEdges, setIncomingEdges }) {
   const mercarRef = useRef(null);
@@ -137,7 +139,8 @@ const TreeNode = ({ node, onToggle, theIndex }) => {
   const [incomingEdges, setIncomingEdges] = useState([]);
   const [loading, setLoading] = useState(false);
   const [modalReady, setModalReady] = useState(false);
-  const { setAlertContent } = useContext(ThemeContext);
+  const [isAlertOpened, setIsAlertOpened] = useState(false);
+  const [alertContent, setAlertContent] = useState(null);
 
   useEffect(() => {
     if (isExpanded) {
@@ -182,6 +185,7 @@ const TreeNode = ({ node, onToggle, theIndex }) => {
         incomingEdges={incomingEdges}
         setIncomingEdges={setIncomingEdges}
       />)
+      setIsAlertOpened(true);
     }
   }, [incomingEdges, modalReady])
 
@@ -212,6 +216,11 @@ const TreeNode = ({ node, onToggle, theIndex }) => {
           )}
         </div>
       )}
+      <ModalApp
+        isOpen={isAlertOpened}
+        setIsOpen={setIsAlertOpened}
+        children={alertContent}
+      />
     </div>
   );
 };
