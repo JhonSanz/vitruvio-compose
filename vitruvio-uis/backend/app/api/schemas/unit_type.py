@@ -1,16 +1,15 @@
 from pydantic import BaseModel
 
 
-class UnitBase(BaseModel):
+class UnitTypeBase(BaseModel):
     name: str
-    symbol: str
 
 
-class UnitCreate(UnitBase):
+class UnitTypeCreate(UnitTypeBase):
     pass
 
 
-class Unit(UnitBase):
+class UnitType(UnitTypeBase):
     id: int
 
     class Config:

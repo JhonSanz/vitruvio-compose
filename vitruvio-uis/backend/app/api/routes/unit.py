@@ -14,3 +14,9 @@ def read_unit(unit_id: int, db: Session = Depends(get_db)):
     if db_unit is None:
         raise HTTPException(status_code=404, detail="Unit not found")
     return db_unit
+
+
+@router.get("/{unit_type_id}", response_model=Unit)
+def get_unit_by_type(unit_type_id: int, db: Session = Depends(get_db)):
+    db_units = crud_unit.get_units_by_type(db=db, unit_type_id=unit_type_id)
+    return db_units
