@@ -8,6 +8,14 @@ from backend.app.api.crud import scale as crud_scale
 
 router = APIRouter()
 
+
+@router.get("/scale_by_type/{unit_type_id}", response_model=List[ScaleInDB])
+def get_unit_by_type(unit_type_id: int, db: Session = Depends(get_db)):
+    """ test
+    """
+    db_scale = crud_scale.get_scales_by_type(db=db, unit_type_id=unit_type_id)
+    return db_scale
+
 @router.post("/scales/", response_model=ScaleInDB)
 def create_scale(scale: ScaleCreate, db: Session = Depends(get_db)):
     return crud_scale.create_scale(db, scale)

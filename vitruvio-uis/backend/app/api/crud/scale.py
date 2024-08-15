@@ -3,6 +3,9 @@ from backend.app.database.models import Scale
 from backend.app.api.schemas.scale import ScaleCreate, ScaleUpdate
 
 
+def get_scales_by_type(*, db: Session, unit_type_id: int):
+    return db.query(Scale).filter(Scale.unit_type_id == unit_type_id).all()
+
 def create_scale(db: Session, scale: ScaleCreate) -> Scale:
     db_scale = Scale(**scale.dict())
     db.add(db_scale)

@@ -113,14 +113,25 @@ function UnitsSystem({
 }
 
 function Scales({
-
+  selectedScale,
+  setSelectedScale,
 }) {
   const [unitTypes, setUnitTypes] = useState([]);
+  const [availableScales, setAvailableScales] = useState([]);
   const [selectedType, setSelectedType] = useState(undefined);
 
   async function getUnitTypes() {
     try {
       const result = await fetchBackend("/unit_type", "GET", {}, { filter_by: false }, "http://localhost:8001");
+      return result
+    } catch (error) {
+      console.error('Error fetching root nodes:', error);
+    }
+  }
+
+  async function getScales() {
+    try {
+      const result = await fetchBackend(`/scale/scale_by_type/${selectedType.id}`, "GET", {}, {}, "http://localhost:8001");
       return result
     } catch (error) {
       console.error('Error fetching root nodes:', error);
@@ -134,6 +145,16 @@ function Scales({
     }
     init();
   }, []);
+
+  useEffect(() => {
+    async function init() {
+      if (selectedType) {
+        const scales = await getScales();
+        setAvailableScales(scales);
+      }
+    }
+    init();
+  }, [selectedType]);
 
   return (
     <Box>
@@ -152,22 +173,21 @@ function Scales({
             }
           </List>
         </Box>
-        {/* <Box width="100%">
-          <h3>Unidades</h3>
+        <Box width="100%">
+          <h3>Escalas</h3>
           <List style={{ border: "1px dotted gray", marginRight: "30px" }}>
             {
-              availableUnits.map(item => (
+              availableScales.map(item => (
                 <ListItem disablePadding>
-                  <ListItemButton selected={selectedUnit?.name === item.name} onClick={() => setSelectedUnit(item)}>
-                    <ListItemText primary={item.name} />
+                  <ListItemButton selected={selectedScale?.value === item.value} onClick={() => setSelectedScale(item)}>
+                    <ListItemText primary={item.value} />
                   </ListItemButton>
                 </ListItem>
               ))
             }
           </List>
-        </Box> */}
+        </Box>
       </Box>
-
     </Box>
   )
 }
@@ -175,6 +195,7 @@ function Scales({
 
 function UnitsPicker({ handleAddNewItem }) {
   const [selectedUnit, setSelectedUnit] = useState(undefined);
+  const [selectedScale, setSelectedScale] = useState(undefined);
   const [formValues, setFormValues] = useState({});
   const [itemType, setItemType] = useState("uis");
 
@@ -228,7 +249,8 @@ function UnitsPicker({ handleAddNewItem }) {
         }
         {
           itemType === "scales" && <Scales
-
+            selectedScale={selectedScale}
+            setSelectedScale={setSelectedScale}
           />
         }
       </Box>
