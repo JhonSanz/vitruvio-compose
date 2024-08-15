@@ -1,6 +1,5 @@
 from sqlalchemy.orm import Session
 # from backend.app.database.models import Unit
-from sqlalchemy.orm import Session
 from backend.app.database.models import UnitType
 from backend.app.api.schemas.unit_type import UnitTypeCreate, UnitTypeUpdate
 
