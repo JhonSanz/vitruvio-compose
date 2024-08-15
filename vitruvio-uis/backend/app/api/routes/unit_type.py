@@ -1,5 +1,5 @@
 from typing import List
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 from backend.app.database.connection import get_db
 from backend.app.api.crud import unit_type as crud_unit_type
@@ -20,8 +20,13 @@ def read_unit_type(unit_type_id: int, db: Session = Depends(get_db)):
     return db_unit_type
 
 @router.get("/", response_model=List[UnitTypeInDB])
-def read_unit_types(skip: int = 0, limit: int = 10, db: Session = Depends(get_db)):
-    return crud_unit_type.get_unit_types(db=db, skip=skip, limit=limit)
+def read_unit_types(
+    filter_by: bool = Query(..., description="True to filter by Unit, False to filter by Scale"),
+    skip: int = 0,
+    limit: int = 10,
+    db: Session = Depends(get_db)
+):
+    return crud_unit_type.get_unit_types(db=db, skip=skip, limit=limit, filter_by=filter_by)
 
 @router.put("/{unit_type_id}", response_model=UnitTypeInDB)
 def update_unit_type(unit_type_id: int, unit_type: UnitTypeUpdate, db: Session = Depends(get_db)):

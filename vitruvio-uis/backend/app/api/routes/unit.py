@@ -10,6 +10,8 @@ router = APIRouter()
 
 @router.get("/unit_by_type/{unit_type_id}", response_model=List[UnitBase])
 def get_unit_by_type(unit_type_id: int, db: Session = Depends(get_db)):
+    """ test
+    """
     db_units = crud_unit.get_units_by_type(db=db, unit_type_id=unit_type_id)
     return db_units
 
