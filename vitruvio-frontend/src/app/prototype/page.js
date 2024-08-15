@@ -49,7 +49,7 @@ function ParamsPicker({
       }
       {
         paramsForm.map((item, index) => (
-          <Box style={{ display: "flex", marginBottom: "15px", borderBottom: "1px solid #e3e3e3", paddingBottom: "13px" }}>
+          <Box key={item.name} style={{ display: "flex", marginBottom: "15px", borderBottom: "1px solid #e3e3e3", paddingBottom: "13px" }}>
             <Box width="100%">{item.name}</Box>
             <Box width="100%">{item.value}</Box>
           </Box>
@@ -113,7 +113,7 @@ const Mercar = forwardRef(function Mercar({ }, ref) {
       <Box sx={{ padding: "25px", backgroundColor: "#fafafa" }}>
         {
           purchase.map((item, index) => (
-            <Box>
+            <Box key={`${item}${index}`}>
               <Box display="flex" mb={3}>
                 <Box style={{ padding: 10, width: "100%" }}>
                   <AsyncAutocomplete

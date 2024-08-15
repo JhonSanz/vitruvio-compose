@@ -69,7 +69,7 @@ function UnitsSystem({
           <List style={{ border: "1px dotted gray", marginRight: "30px" }}>
             {
               unitTypes.map(item => (
-                <ListItem disablePadding>
+                <ListItem disablePadding key={item.name}>
                   <ListItemButton selected={selectedType?.name === item.name} onClick={() => setSelectedType(item)}>
                     <ListItemText primary={item.name} />
                   </ListItemButton>
@@ -83,7 +83,7 @@ function UnitsSystem({
           <List style={{ border: "1px dotted gray", marginRight: "30px" }}>
             {
               availableUnits.map(item => (
-                <ListItem disablePadding>
+                <ListItem disablePadding key={item.name}>
                   <ListItemButton selected={selectedUnit?.name === item.name} onClick={() => setSelectedUnit(item)}>
                     <ListItemText primary={item.name} />
                   </ListItemButton>
@@ -164,7 +164,7 @@ function Scales({
           <List style={{ border: "1px dotted gray", marginRight: "30px" }}>
             {
               unitTypes.map(item => (
-                <ListItem disablePadding>
+                <ListItem disablePadding key={item.name}>
                   <ListItemButton selected={selectedType?.name === item.name} onClick={() => setSelectedType(item)}>
                     <ListItemText primary={item.name} />
                   </ListItemButton>
@@ -178,7 +178,7 @@ function Scales({
           <List style={{ border: "1px dotted gray", marginRight: "30px" }}>
             {
               availableScales.map(item => (
-                <ListItem disablePadding>
+                <ListItem disablePadding key={item.value}>
                   <ListItemButton selected={selectedScale?.value === item.value} onClick={() => setSelectedScale(item)}>
                     <ListItemText primary={item.value} />
                   </ListItemButton>
@@ -196,7 +196,10 @@ function Scales({
 function UnitsPicker({ handleAddNewItem }) {
   const [selectedUnit, setSelectedUnit] = useState(undefined);
   const [selectedScale, setSelectedScale] = useState(undefined);
-  const [formValues, setFormValues] = useState({});
+  const [formValues, setFormValues] = useState({
+    name: "",
+    value: 0
+  });
   const [itemType, setItemType] = useState("uis");
 
   function handleFormChange(e) {
@@ -206,9 +209,16 @@ function UnitsPicker({ handleAddNewItem }) {
   }
 
   function handleSubmit() {
-    if (formValues.name && formValues.value) handleAddNewItem({
-      ...formValues, value: `${formValues.value}${selectedUnit.symbol}`
-    });
+    if (itemType === "uis") {
+      console.log(formValues, selectedUnit)
+      if (formValues.name !== "" && selectedUnit !== undefined) handleAddNewItem({
+        ...formValues, value: `${formValues.value}${selectedUnit.symbol}`
+      });
+    } else if (itemType === "scales") {
+      if (formValues.name !== "" && selectedScale !== undefined) handleAddNewItem({
+        name: formValues.name, value: selectedScale.value
+      });
+    }
   }
 
   return (

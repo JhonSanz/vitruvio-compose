@@ -44,7 +44,7 @@ async function fetchBackend(
     if (!response.ok) {
       return { ok: false, data: responseData.detail }
     }
-    console.log('Datos recibidos:', responseData);
+    // console.log('Datos recibidos:', responseData);
 
     return responseData;
   } catch (error) {
