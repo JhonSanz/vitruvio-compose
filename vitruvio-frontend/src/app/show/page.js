@@ -96,7 +96,7 @@ function ShowNodeDetails({ data, incomingEdges, setIncomingEdges }) {
       <div style={{ border: "1px dotted black" }}>
         {
           incomingEdges.map((item, index) => (
-            <div>
+            <div key={`${item.source.code}${index}`}>
               <div style={{ display: "flex", padding: "30px" }}>
                 <div style={{ width: "100%" }}>
                   <div><b>source</b></div><br />

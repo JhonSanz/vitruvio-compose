@@ -210,7 +210,6 @@ function UnitsPicker({ handleAddNewItem }) {
 
   function handleSubmit() {
     if (itemType === "uis") {
-      console.log(formValues, selectedUnit)
       if (formValues.name !== "" && selectedUnit !== undefined) handleAddNewItem({
         ...formValues, value: `${formValues.value}${selectedUnit.symbol}`
       });
@@ -233,6 +232,7 @@ function UnitsPicker({ handleAddNewItem }) {
           name="name"
           value={formValues["name"]}
           onChange={(e) => handleFormChange(e)}
+          required
         />
         <FormControl size='small' fullWidth>
           <InputLabel id="demo-simple-select-label">Mode</InputLabel>

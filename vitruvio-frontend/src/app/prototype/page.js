@@ -49,7 +49,7 @@ function ParamsPicker({
       }
       {
         paramsForm.map((item, index) => (
-          <Box key={item.name} style={{ display: "flex", marginBottom: "15px", borderBottom: "1px solid #e3e3e3", paddingBottom: "13px" }}>
+          <Box key={`${item.name}${index}`} style={{ display: "flex", marginBottom: "15px", borderBottom: "1px solid #e3e3e3", paddingBottom: "13px" }}>
             <Box width="100%">{item.name}</Box>
             <Box width="100%">{item.value}</Box>
           </Box>
