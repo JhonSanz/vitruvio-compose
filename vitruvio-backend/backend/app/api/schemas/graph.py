@@ -39,3 +39,9 @@ class NodeUpdateRelations(BaseModel):
 
 class NodeDelete(BaseModel):
     node_code: str
+
+
+class NodeFiltering(BaseModel):
+    label: str | None
+    name: str | None
+    code: str | None

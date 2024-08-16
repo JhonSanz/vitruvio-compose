@@ -19,7 +19,7 @@ import ListItemText from "@mui/material/ListItemText";
 
 import ForestIcon from '@mui/icons-material/Forest';
 import SaveIcon from '@mui/icons-material/Save';
-
+import SearchIcon from '@mui/icons-material/Search';
 
 
 export default function ToolbarApp() {
@@ -39,7 +39,8 @@ export default function ToolbarApp() {
 
   const optionsMenu = [
     { name: "Crear", route: "prototype", icon: <SaveIcon /> },
-    { name: "Arbol", route: "show", icon: <ForestIcon /> }
+    { name: "Arbol", route: "show", icon: <ForestIcon /> },
+    { name: "Buscar", route: "filter", icon: <SearchIcon /> }
   ]
 
   const listItems = () => (

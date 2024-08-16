@@ -1,7 +1,7 @@
 from neomodel import db
 from backend.app.api.crud.item import create_item, get_item_by_code
 from backend.app.api.crud.relation import create_relation_graph
-from backend.app.api.schemas.graph import DataModel, DataInsumos, NodeUpdateRelations
+from backend.app.api.schemas.graph import DataModel, DataInsumos, NodeUpdateRelations, NodeFiltering
 from backend.app.api.schemas.item import ItemCreate
 from backend.app.api.schemas.relation import RelationCreateInsumo
 from backend.app.api.utils.node_format import extract_node_properties
@@ -126,4 +126,28 @@ def delete_node(*, node_code: str):
         result, _ = db.cypher_query(query, params)
     except Exception as e:
         print(f"Failed to delete node {node_code} \n {str(e)}")
+        return []
+
+
+def filter_nodes(*, params: NodeFiltering):
+    query = "MATCH (n)"
+    conditions = []
+
+    if params.label:
+        conditions.append(f"n:{params.label}")
+    if params.code:
+        conditions.append(f"n.code CONTAINS '{params.code}'")
+    if params.name:
+        conditions.append(f"n.name CONTAINS '{params.name}'")
+    if conditions:
+        query += " WHERE " + " AND ".join(conditions)
+    query += " RETURN n"
+
+    print(query)
+    try:
+        result, _ = db.cypher_query(query)
+        nodes = [extract_node_properties(record[0]) for record in result]
+        return nodes
+    except Exception as e:
+        print(f"Failed to fetch nodes: {str(e)}")
         return []

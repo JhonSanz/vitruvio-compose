@@ -1,7 +1,7 @@
 from typing import List, Optional
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Query
 from backend.app.api.crud import graph as crud_graph
-from backend.app.api.schemas.graph import DataModel, DataInsumos, NodeUpdateRelations, NodeDelete
+from backend.app.api.schemas.graph import DataModel, DataInsumos, NodeUpdateRelations, NodeDelete, NodeFiltering
 from backend.app.api.crud.item import Item
 
 
@@ -55,3 +55,13 @@ def update_node_relations(data_model: NodeUpdateRelations):
 def delete_node(data_model: NodeDelete):
     items = crud_graph.delete_node(node_code=data_model.node_code)
     return items
+
+
+@router.get("/filter-nodes")
+def filter_nodes(
+    label: Optional[str] = Query(None),
+    name: Optional[str] = Query(None),
+    code: Optional[str] = Query(None)                 
+):
+    params = NodeFiltering(label=label, name=name, code=code)
+    return crud_graph.filter_nodes(params=params)
