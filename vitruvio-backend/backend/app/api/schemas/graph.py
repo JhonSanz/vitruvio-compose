@@ -27,7 +27,6 @@ class RelationsSchema(BaseModel):
 
 class DataInsumos(BaseModel):
     name: str
-    code: str
     type: str
     nodeParams: List[ParamsSchema]
     nodeRelations: List[RelationsSchema] | None

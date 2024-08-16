@@ -158,7 +158,7 @@ export default function Prototype() {
   const [itemType, setItemType] = useState("fundamental");
   const [formInsumo, setFormInsumo] = useState({
     name: "",
-    code: "",
+    // code: "",
     type: "",
   });
 
@@ -243,7 +243,7 @@ export default function Prototype() {
           onChange={handleChangeInsumoForm}
         />
       </Box>
-      <Box mb={2}>
+      {/* <Box mb={2}>
         <TextField
           fullWidth
           id="outlined-basic"
@@ -253,7 +253,7 @@ export default function Prototype() {
           value={formInsumo["code"]}
           onChange={handleChangeInsumoForm}
         />
-      </Box>
+      </Box> */}
       <FormControl fullWidth>
         <InputLabel id="demo-simple-select-label">Mode</InputLabel>
         <Select

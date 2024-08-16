@@ -15,7 +15,7 @@ import CheckIcon from '@mui/icons-material/Check';
 import ModalApp from '@/components/modal';
 
 
-function ShowNodeDetails({ data, incomingEdges, setIncomingEdges }) {
+function ShowNodeDetails({ label, data, incomingEdges, setIncomingEdges }) {
   const mercarRef = useRef(null);
   const [confirmDelete, setConfirmDelete] = useState(false);
 
@@ -84,6 +84,7 @@ function ShowNodeDetails({ data, incomingEdges, setIncomingEdges }) {
           </IconButton>
         }
       </div>
+      <div style={{ fontStyle: "italic" }}>{label}</div><br />
       <div style={{ display: 'flex', flexDirection: 'column', width: '300px' }}>
         {entries.map(([key, value]) => (
           <div key={key} style={{ display: 'flex', marginBottom: '8px' }}>
@@ -181,6 +182,7 @@ const TreeNode = ({ node, onToggle, theIndex }) => {
   useEffect(() => {
     if (modalReady) {
       setAlertContent(<ShowNodeDetails
+        label={node.labels[0]}
         data={node.properties}
         incomingEdges={incomingEdges}
         setIncomingEdges={setIncomingEdges}
@@ -193,7 +195,7 @@ const TreeNode = ({ node, onToggle, theIndex }) => {
     <div style={{ marginLeft: '30px', padding: "10px", width: "400px" }}>
       <div style={{ display: "flex", justifyContent: "start" }}>
         <div style={{ marginRight: "10px" }}><b>{theIndex}</b></div>
-        <div><small>{node.properties.code}</small> {node.properties.name}</div>
+        <div><small>{node.labels[0]}</small> {node.properties.name}</div>
         <div style={{ cursor: 'pointer', marginLeft: "10px", display: "flex" }}>
           <div><InfoOutlinedIcon onClick={() => getNodeDetail()} fontSize='small' color='primary' /></div>
           <div onClick={handleToggle}>{isExpanded ? '[-]' : '[+]'}</div>

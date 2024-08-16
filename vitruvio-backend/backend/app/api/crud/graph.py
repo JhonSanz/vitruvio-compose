@@ -5,6 +5,7 @@ from backend.app.api.schemas.graph import DataModel, DataInsumos, NodeUpdateRela
 from backend.app.api.schemas.item import ItemCreate
 from backend.app.api.schemas.relation import RelationCreateInsumo
 from backend.app.api.utils.node_format import extract_node_properties
+from backend.app.api.utils.clean_string import clean_string
 
 
 def create_graph(data_model: DataModel):
@@ -19,11 +20,12 @@ def create_graph(data_model: DataModel):
 def create_insumo(data_model: DataInsumos):
     processed_params = {item.name:item.value for item in data_model.nodeParams}
     processed_params["name"] = data_model.name
-    node = ItemCreate(label=data_model.type, code=data_model.code, name=data_model.name, properties=processed_params)
+    code = f"{clean_string(s=data_model.name)}_{clean_string(s=data_model.type)}"
+    node = ItemCreate(label=data_model.type, code=code, name=data_model.name, properties=processed_params)
     
-    item_found = get_item_by_code(item_id=data_model.code)
+    item_found = get_item_by_code(item_id=code)
     if item_found:
-        raise Exception(F"Item code {data_model.code} already exists")
+        raise Exception(F"Item code {code} already exists")
 
     create_item(item=node)
     for rel in data_model.nodeRelations:
