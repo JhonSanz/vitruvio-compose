@@ -78,7 +78,14 @@ def get_node_incoming_edges(*, code: str):
     params = { "code": code }
     try:
         result, _ = db.cypher_query(query, params)
-        return [{"relation": record[0], "source": record[1]} for record in result]
+        answer = []
+        for record in result:
+            source_values = extract_node_properties(record[1])
+            answer.append({
+                "relation": record[0],
+                "source": {**source_values["properties"], "label": source_values["labels"][0]}
+            })
+        return answer
     except Exception as e:
         print(f"Failed to fetch nodes: {str(e)}")
         return []

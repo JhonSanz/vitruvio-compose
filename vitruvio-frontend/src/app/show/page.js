@@ -101,7 +101,7 @@ function ShowNodeDetails({ label, data, incomingEdges, setIncomingEdges }) {
               <div style={{ display: "flex", padding: "30px" }}>
                 <div style={{ width: "100%" }}>
                   <div><b>source</b></div><br />
-                  <div>{item.source.code} {item.source.name}</div>
+                  <div><span style={{ fontStyle: "italic" }}>{item.source.label}</span> {item.source.name}</div>
                 </div>
                 <div style={{ width: "100%" }}>
                   <div><b>relation</b></div><br />
@@ -195,7 +195,7 @@ const TreeNode = ({ node, onToggle, theIndex }) => {
     <div style={{ marginLeft: '30px', padding: "10px", width: "400px" }}>
       <div style={{ display: "flex", justifyContent: "start" }}>
         <div style={{ marginRight: "10px" }}><b>{theIndex}</b></div>
-        <div><small>{node.labels[0]}</small> {node.properties.name}</div>
+        <div><small style={{ fontStyle: "italic" }}>{node.labels[0]}</small> {node.properties.name}</div>
         <div style={{ cursor: 'pointer', marginLeft: "10px", display: "flex" }}>
           <div><InfoOutlinedIcon onClick={() => getNodeDetail()} fontSize='small' color='primary' /></div>
           <div onClick={handleToggle}>{isExpanded ? '[-]' : '[+]'}</div>
