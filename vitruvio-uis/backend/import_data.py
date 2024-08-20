@@ -1,7 +1,7 @@
 import pandas as pd
 from sqlalchemy.exc import IntegrityError
-from backend.app.database.connection import SessionLocal, engine
-from backend.app.database.models import UnitType
+from app.database.connection import SessionLocal, engine
+from app.database.models import UnitType
 
 
 class ImportData:
@@ -15,7 +15,11 @@ class ImportData:
         with SessionLocal() as db:
             unit_type_found = db.query(UnitType).filter(UnitType.name == unit_type_name).first()
             if not unit_type_found:
-                raise Exception(f"Type {unit_type_name} does not exist")
+                print(f"Type {unit_type_name} does not exist and will be created")
+                new_unit_type = UnitType(name=unit_type_name)
+                db.add(new_unit_type)
+                db.commit()
+                unit_type_found = new_unit_type
             self.df["unit_type_id"] = unit_type_found.id
     
     def create_data(self, *, table: str):
