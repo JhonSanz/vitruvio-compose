@@ -46,7 +46,7 @@ function UnitsSystem({
   useEffect(() => {
     async function init() {
       const unit_types = await getUnitTypes();
-      setUnitTypes(unit_types);
+      if (unit_types) setUnitTypes(unit_types);
     }
     init();
   }, []);
@@ -55,7 +55,7 @@ function UnitsSystem({
     async function init() {
       if (selectedType) {
         const units = await getUnits();
-        setAvailableUnits(units);
+        if (units) setAvailableUnits(units);
       }
     }
     init();
@@ -141,7 +141,7 @@ function Scales({
   useEffect(() => {
     async function init() {
       const unit_types = await getUnitTypes();
-      setUnitTypes(unit_types);
+      if (unit_types) setUnitTypes(unit_types);
     }
     init();
   }, []);
@@ -150,7 +150,7 @@ function Scales({
     async function init() {
       if (selectedType) {
         const scales = await getScales();
-        setAvailableScales(scales);
+        if (scales) setAvailableScales(scales);
       }
     }
     init();
@@ -197,7 +197,7 @@ function NoUnits({
   handleFormChange
 }) {
   return (
-    <Box mr={1}>
+    <Box mt={3}>
       <TextField
         size="small"
         id="outlined-basic"
@@ -238,7 +238,7 @@ function UnitsPicker({ handleAddNewItem }) {
       });
     } else if (itemType === "no_unit") {
       if (formValues.name !== "") handleAddNewItem({
-        name: formValues.name, value: selectedScale.value
+        name: formValues.name, value: formValues.value
       });
     }
   }
