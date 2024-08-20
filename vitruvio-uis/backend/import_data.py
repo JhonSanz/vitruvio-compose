@@ -1,5 +1,6 @@
 import pandas as pd
 from sqlalchemy.exc import IntegrityError
+from sqlalchemy import MetaData, Table
 from app.database.connection import SessionLocal, engine
 from app.database.models import UnitType
 
@@ -22,6 +23,14 @@ class ImportData:
                 unit_type_found = new_unit_type
             self.df["unit_type_id"] = unit_type_found.id
     
+    @staticmethod
+    def reset_table(*, table: str):
+        metadata = MetaData()
+        with SessionLocal() as session_:
+            table_found = Table(table, metadata, autoload_with=engine)
+            session_.execute(table_found.delete())
+            session_.commit()
+        
     def create_data(self, *, table: str):
         with SessionLocal() as session_:
             session_.begin()
@@ -36,11 +45,13 @@ class ImportData:
 
 FILES = [
     { "unit_type_name": "Longitud", "create_on": "unit", "file": "data/longitud.csv" },
-    # { "unit_type_name": "masa", "create_on": "unit", "file": "masa.csv" },
+    { "unit_type_name": "Unidades visuales", "create_on": "scale", "file": "data/visual.csv" },
     # { "unit_type_name": "tiempo", "create_on": "unit", "file": "tiempo.csv" },
     # { "unit_type_name": "velocidad", "create_on": "unit", "file": "velocidad.csv" },
 ]
 
+ImportData.reset_table(table="unit")
+ImportData.reset_table(table="scale")
 for file in FILES:
     importer_units = ImportData()
     importer_units.read_csv(path=file["file"])
