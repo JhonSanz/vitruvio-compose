@@ -192,6 +192,25 @@ function Scales({
   )
 }
 
+function NoUnits({
+  formValues,
+  handleFormChange
+}) {
+  return (
+    <Box mr={1}>
+      <TextField
+        size="small"
+        id="outlined-basic"
+        label="Value"
+        variant="outlined"
+        type='number'
+        name="value"
+        value={formValues["value"]}
+        onChange={(e) => handleFormChange(e)}
+      />
+    </Box>
+  )
+}
 
 function UnitsPicker({ handleAddNewItem }) {
   const [selectedUnit, setSelectedUnit] = useState(undefined);
@@ -215,6 +234,10 @@ function UnitsPicker({ handleAddNewItem }) {
       });
     } else if (itemType === "scales") {
       if (formValues.name !== "" && selectedScale !== undefined) handleAddNewItem({
+        name: formValues.name, value: selectedScale.value
+      });
+    } else if (itemType === "no_unit") {
+      if (formValues.name !== "") handleAddNewItem({
         name: formValues.name, value: selectedScale.value
       });
     }
@@ -245,6 +268,7 @@ function UnitsPicker({ handleAddNewItem }) {
           >
             <MenuItem value={"uis"}>Sistema de unidades</MenuItem>
             <MenuItem value={"scales"}>Escalas</MenuItem>
+            <MenuItem value={"no_unit"}>Sin unidades</MenuItem>
           </Select>
         </FormControl>
       </Box>
@@ -261,6 +285,12 @@ function UnitsPicker({ handleAddNewItem }) {
           itemType === "scales" && <Scales
             selectedScale={selectedScale}
             setSelectedScale={setSelectedScale}
+          />
+        }
+        {
+          itemType === "no_unit" && <NoUnits
+            handleFormChange={handleFormChange}
+            formValues={formValues}
           />
         }
       </Box>
