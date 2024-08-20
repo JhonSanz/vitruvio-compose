@@ -1,5 +1,3 @@
-version: '3.8'
-
 services: 
   frontend:
     build:
@@ -41,7 +39,7 @@ services:
         condition: service_started
     restart: on-failure
     environment:
-      - DATABASE_URL=sqlite:///./my_database.db
+      - DATABASE_URL=postgresql://vitruviouser:vitruviopassword@db:5432/vitruviodatabase
     volumes:
       - ./vitruvio-uis/backend:/backend
 
@@ -58,7 +56,22 @@ services:
       - neo4j_logs:/logs
       - neo4j_conf:/conf
 
+  db:
+    container_name: vitruvio-database
+    image: postgres:16.2
+    environment:
+      - POSTGRES_CONTAINER_NAME=vitruvio-database
+      - POSTGRES_USER=vitruviouser
+      - POSTGRES_PASSWORD=vitruviopassword
+      - POSTGRES_DB=vitruviodatabase
+    ports:
+      - "5432:5432"
+    volumes:
+      - dev_postgres_data:/var/lib/postgresql/data
+
+
 volumes:
   neo4j_data:
   neo4j_logs:
   neo4j_conf:
+  dev_postgres_data:
