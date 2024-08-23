@@ -18,23 +18,27 @@ def create_graph(data_model: DataModel):
 
 @db.transaction
 def create_insumo(data_model: DataInsumos):
-    # processed_params = {item.name:item.value for item in data_model.nodeParams}
-    # processed_params["name"] = data_model.name
-    # code = f"{clean_string(s=data_model.name)}_{clean_string(s=data_model.type)}"
-    # node = ItemCreate(label=data_model.type, code=code, name=data_model.name, properties=processed_params)
-    
-    # item_found = get_item_by_code(item_id=code)
-    # if item_found:
-    #     raise Exception(F"Item code {code} already exists")
+    processed_params = {item.name:item.value for item in data_model.nodeParams}
+    processed_params["name"] = data_model.name
 
-    # create_item(item=node)
-    # for rel in data_model.nodeRelations:
-    #     create_relation_graph(relation=RelationCreateInsumo(
-    #         relation_name="BELONGS",
-    #         origin_code=node.code,
-    #         target_code=rel.related,
-    #         properties=rel.params
-    #     ))
+    labels = [clean_string(s=l) for l in data_model.type]
+    code = f"{clean_string(s=data_model.name)}_{'_'.join(labels)}"
+    processed_labels = ":".join(labels)
+
+    node = ItemCreate(label=processed_labels, code=code, name=data_model.name, properties=processed_params)
+
+    item_found = get_item_by_code(item_id=code)
+    if item_found:
+        raise Exception(F"Item code {code} already exists")
+
+    create_item(item=node)
+    for rel in data_model.nodeRelations:
+        create_relation_graph(relation=RelationCreateInsumo(
+            relation_name="BELONGS",
+            origin_code=node.code,
+            target_code=rel.related,
+            properties=rel.params
+        ))
     print(data_model)
 
 
@@ -107,14 +111,16 @@ def delete_all_relations(*, code: str):
 
 @db.transaction
 def update_node_relations(*, data_model: NodeUpdateRelations):
-    delete_all_relations(code=data_model.node)
-    for rel in data_model.relations:
-        create_relation_graph(relation=RelationCreateInsumo(
-            relation_name="BELONGS",
-            origin_code=data_model.node,
-            target_code=rel.related,
-            properties=rel.params
-        ))
+    print(data_model)
+    
+    # delete_all_relations(code=data_model.node)
+    # for rel in data_model.relations:
+    #     create_relation_graph(relation=RelationCreateInsumo(
+    #         relation_name="BELONGS",
+    #         origin_code=data_model.node,
+    #         target_code=rel.related,
+    #         properties=rel.params
+    #     ))
 
 
 def delete_node(*, node_code: str):

@@ -32,8 +32,15 @@ class DataInsumos(BaseModel):
     nodeRelations: List[RelationsSchema] | None
 
 
+class NodeDetails(BaseModel):
+    name: str
+    value: str
+
+
 class NodeUpdateRelations(BaseModel):
     node: str
+    details: List[NodeDetails] | None
+    labels: List[str] | None
     relations: List[RelationsSchema] | None
 
 

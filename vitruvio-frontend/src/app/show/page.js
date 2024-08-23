@@ -14,19 +14,28 @@ import CloseIcon from '@mui/icons-material/Close';
 import CheckIcon from '@mui/icons-material/Check';
 import ModalApp from '@/components/modal';
 import FiltersSection from '@/components/prototype/filtersSection';
+import TextField from '@mui/material/TextField';
+import { ParamsPicker } from '../prototype/page';
 
 
 function ShowNodeDetails({ label, data, incomingEdges, setIncomingEdges }) {
   const mercarRef = useRef(null);
   const [confirmDelete, setConfirmDelete] = useState(false);
+  const [labelPicker, setLabelPicker] = useState(label);
+  const [paramsForm, setParamsForm] = useState([]);
+  const [currentDetails, setCurrentDetails] = useState(
+    Object.entries(data).map(([key, value]) => {
+      return { name: key, value }
+    })
+  );
 
+  console.log("currentDetails", currentDetails)
   if (!data || typeof data !== 'object') {
     return <p>No data available</p>;
   }
 
-  const entries = Object.entries(data);
-
   async function handleSetNewRelations() {
+    const allDetails = [...currentDetails, ...paramsForm];
     const result = incomingEdges.map(item => {
       return {
         related: item.source.code,
@@ -41,7 +50,12 @@ function ShowNodeDetails({ label, data, incomingEdges, setIncomingEdges }) {
         }
       }
     }).filter(item => item !== undefined)
-    const final_data = { node: data.code, relations: [...result, ...result2] };
+    const final_data = {
+      node: data.code,
+      labels: labelPicker,
+      details: allDetails,
+      relations: [...result, ...result2]
+    };
     try {
       const result = await fetchBackend("/graph/update-node-relations", "POST", final_data);
       window.location.reload()
@@ -56,6 +70,12 @@ function ShowNodeDetails({ label, data, incomingEdges, setIncomingEdges }) {
     setIncomingEdges(copied);
   }
 
+  function handleDeleteDetail(index) {
+    const copied = [...currentDetails];
+    copied.splice(index, 1);
+    setCurrentDetails(copied);
+  }
+
   async function handleDeleteNode() {
     try {
       const result = await fetchBackend("/graph/delete-node", "POST", { node_code: data.code });
@@ -68,7 +88,7 @@ function ShowNodeDetails({ label, data, incomingEdges, setIncomingEdges }) {
   return (
     <div>
       <div style={{ display: "flex" }}>
-        <h4>{data.name}</h4>
+        <h1>{data.name}</h1>
         {
           confirmDelete && <div style={{ display: "flex" }}>
             <IconButton aria-label="delete" color="error">
@@ -85,55 +105,91 @@ function ShowNodeDetails({ label, data, incomingEdges, setIncomingEdges }) {
           </IconButton>
         }
       </div>
-      <div style={{ fontStyle: "italic" }}>{label}</div><br />
-      <div style={{ display: 'flex', flexDirection: 'column', width: '300px' }}>
-        {entries.map(([key, value]) => (
-          <div key={key} style={{ display: 'flex', marginBottom: '8px' }}>
-            <div style={{ flex: 1, fontWeight: 'bold' }}>{key.charAt(0).toUpperCase() + key.slice(1)}:</div>
-            <div style={{ flex: 2 }}>{value}</div>
-          </div>
-        ))}
+      <div style={{ fontStyle: "italic" }}>
+        <TextField
+          fullWidth
+          id="outlined-basic"
+          label="Labels"
+          name="name"
+          variant="outlined"
+          value={labelPicker}
+          onChange={(e) => setLabelPicker(e.target.value)}
+        />
       </div>
       <br />
       <hr />
-      <br />
-      <h4>Current bindings</h4>
-      <div style={{ border: "1px dotted gray", backgroundColor: "#fafafa" }}>
-        {
-          incomingEdges.map((item, index) => (
-            <div key={`${item.source.code}${index}`}>
-              <div style={{ display: "flex", padding: "30px" }}>
+      <h4>Details</h4>
+      <div style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
+        <div style={{ backgroundColor: "#fafafa", padding: "25px" }}>
+          {
+            currentDetails.map((item, index) => (
+              <div key={item.name} style={{ display: 'flex', marginBottom: '8px', height: "40px", borderBottom: "1px dotted gray" }}>
+                <div style={{ width: "100%", fontWeight: 'bold' }}>{item.name.charAt(0).toUpperCase() + item.name.slice(1)}:</div>
+                <div style={{ width: "100%" }}>{item.value}</div>
                 <div style={{ width: "100%" }}>
-                  <div><b>source</b></div><br />
-                  <div><span style={{ fontStyle: "italic" }}>{item.source.label}</span> {item.source.name}</div>
-                </div>
-                <div style={{ width: "100%" }}>
-                  <div><b>relation</b></div><br />
-                  {Object.entries(item.relation).map(([key, value]) => (
-                    <div key={key} style={{ display: 'flex', marginBottom: '8px' }}>
-                      <div style={{ flex: 1 }}>{key.charAt(0).toUpperCase() + key.slice(1)}:</div>
-                      <div style={{ flex: 2 }}>{value}</div>
-                    </div>
-                  ))}
-                </div>
-                <div>
-                  <IconButton aria-label="delete" color="secondary">
-                    <DeleteIcon onClick={() => handleDeleteRelation(index)} />
-                  </IconButton>
+                  {
+                    item.name !== "code" && <IconButton aria-label="delete" color="secondary">
+                      <DeleteIcon onClick={() => handleDeleteDetail(index)} />
+                    </IconButton>
+                  }
                 </div>
               </div>
-              {index < incomingEdges.length - 1 && <hr />}
-            </div>
-          ))
-        }
-      </div><br /><br />
+            ))
+          }
+        </div>
+        <Box mb={2}>
+          <h4>New Details</h4>
+          <ParamsPicker
+            initialLabel="Param"
+            paramsForm={paramsForm}
+            setParamsForm={setParamsForm}
+          />
+        </Box>
+      </div>
       <hr />
-      <br />
+      <h4>Current bindings</h4>
+      {
+        incomingEdges.length === 0 && <div>
+          <h5>{data.name} no tiene relaciones</h5>
+        </div>
+      }
+      {
+        incomingEdges.length > 0 && (
+          <div style={{ border: "1px dotted gray", backgroundColor: "#fafafa" }}>
+            {
+              incomingEdges.map((item, index) => (
+                <div key={`${item.source.code}${index}`}>
+                  <div style={{ display: "flex", padding: "30px" }}>
+                    <div style={{ width: "100%" }}>
+                      <div><b>source</b></div><br />
+                      <div><span style={{ fontStyle: "italic" }}>{item.source.label}</span> {item.source.name}</div>
+                    </div>
+                    <div style={{ width: "100%" }}>
+                      <div><b>relation</b></div><br />
+                      {Object.entries(item.relation).map(([key, value]) => (
+                        <div key={key} style={{ display: 'flex', marginBottom: '8px' }}>
+                          <div style={{ flex: 1 }}>{key.charAt(0).toUpperCase() + key.slice(1)}:</div>
+                          <div style={{ flex: 2 }}>{value}</div>
+                        </div>
+                      ))}
+                    </div>
+                    <div>
+                      <IconButton aria-label="delete" color="secondary">
+                        <DeleteIcon onClick={() => handleDeleteRelation(index)} />
+                      </IconButton>
+                    </div>
+                  </div>
+                  {index < incomingEdges.length - 1 && <hr />}
+                </div>
+              ))
+            }
+          </div>
+        )
+      }
       <h4>New bindings</h4>
       <Mercar ref={mercarRef} />
-      <br /><br />
-      <hr />
       <br />
+      <hr />
       <Button color="primary" variant="contained" onClick={() => handleSetNewRelations()}>Guardar</Button>
     </div>
   );
@@ -190,7 +246,7 @@ const TreeNode = ({ node, onToggle, theIndex }) => {
   useEffect(() => {
     if (modalReady) {
       setAlertContent(<ShowNodeDetails
-        label={node.labels[0]}
+        label={node.labels}
         data={node.properties}
         incomingEdges={incomingEdges}
         setIncomingEdges={setIncomingEdges}
@@ -203,7 +259,7 @@ const TreeNode = ({ node, onToggle, theIndex }) => {
     <div style={{ marginLeft: '30px', padding: "10px", width: "400px" }}>
       <div style={{ display: "flex", justifyContent: "start" }}>
         <div style={{ marginRight: "10px" }}><b>{theIndex}</b></div>
-        <div><small style={{ fontStyle: "italic" }}>{node.labels[0]}</small> {node.properties.name}</div>
+        <div><small style={{ fontStyle: "italic" }}>{node.labels.join(", ")}</small> {node.properties.name}</div>
         <div style={{ cursor: 'pointer', marginLeft: "10px", display: "flex" }}>
           <div><InfoOutlinedIcon onClick={() => getNodeDetail()} fontSize='small' color='primary' /></div>
           <div onClick={handleToggle}>{isExpanded ? '[-]' : '[+]'}</div>

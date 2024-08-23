@@ -15,7 +15,7 @@ import Button from '@mui/material/Button';
 import UnitsPicker from '@/components/prototype/unitsPicker';
 
 
-function ParamsPicker({
+export function ParamsPicker({
   size = "medium",
   paramsForm,
   setParamsForm,
@@ -173,12 +173,16 @@ export default function Prototype() {
 
   const [paramsForm, setParamsForm] = useState([]);
 
+  useEffect(() => {
+    console.log(paramsForm)
+  }, [paramsForm])
+
   async function handleSubmitFullForm() {
     setDisabledButton(true);
     const finalBody = {
       ...formInsumo,
       type: formInsumo["type"].split(","),
-      nodeParams: [...paramsForm, { name: "itemType", value: itemType }],
+      nodeParams: [...paramsForm],
       nodeRelations: []
     }
     switch (itemType) {
