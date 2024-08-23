@@ -21,7 +21,7 @@ import { ParamsPicker } from '../prototype/page';
 function ShowNodeDetails({ label, data, incomingEdges, setIncomingEdges }) {
   const mercarRef = useRef(null);
   const [confirmDelete, setConfirmDelete] = useState(false);
-  const [labelPicker, setLabelPicker] = useState(label);
+  const [labelPicker, setLabelPicker] = useState(label.join(","));
   const [paramsForm, setParamsForm] = useState([]);
   const [currentDetails, setCurrentDetails] = useState(
     Object.entries(data).map(([key, value]) => {
@@ -29,7 +29,6 @@ function ShowNodeDetails({ label, data, incomingEdges, setIncomingEdges }) {
     })
   );
 
-  console.log("currentDetails", currentDetails)
   if (!data || typeof data !== 'object') {
     return <p>No data available</p>;
   }
@@ -50,9 +49,10 @@ function ShowNodeDetails({ label, data, incomingEdges, setIncomingEdges }) {
         }
       }
     }).filter(item => item !== undefined)
+    console.log(labelPicker)
     const final_data = {
       node: data.code,
-      labels: labelPicker,
+      labels: labelPicker.split(","),
       details: allDetails,
       relations: [...result, ...result2]
     };

@@ -1,7 +1,8 @@
 from neomodel import db
+from typing import List
 from backend.app.api.crud.item import create_item, get_item_by_code
 from backend.app.api.crud.relation import create_relation_graph
-from backend.app.api.schemas.graph import DataModel, DataInsumos, NodeUpdateRelations, NodeFiltering
+from backend.app.api.schemas.graph import DataModel, DataInsumos, NodeUpdateRelations, NodeFiltering, NodeDetails
 from backend.app.api.schemas.item import ItemCreate
 from backend.app.api.schemas.relation import RelationCreateInsumo
 from backend.app.api.utils.node_format import extract_node_properties
@@ -109,18 +110,63 @@ def delete_all_relations(*, code: str):
         return []
 
 
+def update_node_labels(*, code: str, labels: List[str]):
+    remove_labels_query = """
+        MATCH (n {code: $code})
+        WITH n, labels(n) AS existingLabels
+        FOREACH (label IN existingLabels | REMOVE n:label)
+    """
+    
+    query = "MATCH (n {code: $code}) "
+    query += "SET " + ", ".join(f"n:{label}" for label in labels)
+    params = { "code": code }
+    try:
+        db.cypher_query(remove_labels_query, params)
+        result, _ = db.cypher_query(query, params)
+    except Exception as e:
+        print(f"Failed to delete relations of node {code} \n {str(e)}")
+        return []
+
+
+def update_node_props(*, code: str, details: List[NodeDetails]):
+    remove_props_query = """
+        MATCH (n {code: $code})
+        set n = {}
+        return n
+    """
+    
+    set_props_query = "MATCH (n) "
+    set_props_query += "WHERE id(n) = $id "
+    set_props_query += " SET "
+    set_props_query += ", ".join(f"n.{prop.name} = ${prop.name}" for prop in details)
+
+    params = { prop.name: prop.value for prop in details }
+
+    try:
+        result, _ = db.cypher_query(remove_props_query, { "code": code })        
+        params = { **params, "id": result[0][0].id }
+        result, _ = db.cypher_query(set_props_query, params)
+        return result
+    except Exception as e:
+        print(f"Failed to update details of node {code} \n {str(e)}")
+        return []
+
+
 @db.transaction
 def update_node_relations(*, data_model: NodeUpdateRelations):
-    print(data_model)
+    labels = [clean_string(s=l) for l in data_model.labels]
+
+    update_node_labels(code=data_model.node, labels=labels)
+    update_node_props(code=data_model.node, details=data_model.details)
     
-    # delete_all_relations(code=data_model.node)
-    # for rel in data_model.relations:
-    #     create_relation_graph(relation=RelationCreateInsumo(
-    #         relation_name="BELONGS",
-    #         origin_code=data_model.node,
-    #         target_code=rel.related,
-    #         properties=rel.params
-    #     ))
+    delete_all_relations(code=data_model.node)
+    for rel in data_model.relations:
+        create_relation_graph(relation=RelationCreateInsumo(
+            relation_name="BELONGS",
+            origin_code=data_model.node,
+            target_code=rel.related,
+            properties=rel.params
+        ))
 
 
 def delete_node(*, node_code: str):
