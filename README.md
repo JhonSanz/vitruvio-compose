@@ -20,3 +20,14 @@ config.set_main_option('sqlalchemy.url', DATABASE_URL)
 ```
 3. donde esté nuestro alembic.ini correr `alembic revision --autogenerate -m "Initial migration"` para generar las migraciones
 4. correr `alembic upgrade head` para aplicar las migraciones
+
+
+
+---
+
+cambiar los 999
+ponerle el symbol al acido clorhidrico HCL
+
+
+acidos saturados e insaturados aplicar formula para mercar
+permitir que el label reciba varios valores

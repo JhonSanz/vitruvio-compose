@@ -203,7 +203,7 @@ function NoUnits({
         id="outlined-basic"
         label="Value"
         variant="outlined"
-        type='number'
+        type='text'
         name="value"
         value={formValues["value"]}
         onChange={(e) => handleFormChange(e)}
