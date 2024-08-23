@@ -66,7 +66,7 @@ function UnitsSystem({
       <Box display="flex" marginBottom={5}>
         <Box width="100%">
           <h3>Tipos</h3>
-          <List style={{ border: "1px dotted gray", marginRight: "30px" }}>
+          <List style={{ border: "1px dotted gray", height: "300px", overflow: "scroll", marginRight: "30px" }}>
             {
               unitTypes.map(item => (
                 <ListItem disablePadding key={item.name}>
@@ -80,7 +80,7 @@ function UnitsSystem({
         </Box>
         <Box width="100%">
           <h3>Unidades</h3>
-          <List style={{ border: "1px dotted gray", marginRight: "30px" }}>
+          <List style={{ border: "1px dotted gray", height: "300px", overflow: "scroll", marginRight: "30px" }}>
             {
               availableUnits.map(item => (
                 <ListItem disablePadding key={item.name}>
@@ -161,7 +161,7 @@ function Scales({
       <Box display="flex" marginBottom={5}>
         <Box width="100%">
           <h3>Tipos</h3>
-          <List style={{ border: "1px dotted gray", marginRight: "30px" }}>
+          <List style={{ border: "1px dotted gray", height: "300px", overflow: "scroll", marginRight: "30px" }}>
             {
               unitTypes.map(item => (
                 <ListItem disablePadding key={item.name}>
@@ -175,7 +175,7 @@ function Scales({
         </Box>
         <Box width="100%">
           <h3>Escalas</h3>
-          <List style={{ border: "1px dotted gray", marginRight: "30px" }}>
+          <List style={{ border: "1px dotted gray", height: "300px", overflow: "scroll", marginRight: "30px" }}>
             {
               availableScales.map(item => (
                 <ListItem disablePadding key={item.value}>

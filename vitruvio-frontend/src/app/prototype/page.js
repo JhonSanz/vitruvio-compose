@@ -178,6 +178,7 @@ export default function Prototype() {
     setDisabledButton(true);
     const finalBody = {
       ...formInsumo,
+      type: formInsumo["type"].split(","),
       nodeParams: [...paramsForm, { name: "itemType", value: itemType }],
       nodeRelations: []
     }

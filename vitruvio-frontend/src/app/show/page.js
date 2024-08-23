@@ -13,6 +13,7 @@ import convertObject from '@/utils/transformObject';
 import CloseIcon from '@mui/icons-material/Close';
 import CheckIcon from '@mui/icons-material/Check';
 import ModalApp from '@/components/modal';
+import FiltersSection from '@/components/prototype/filtersSection';
 
 
 function ShowNodeDetails({ label, data, incomingEdges, setIncomingEdges }) {
@@ -229,21 +230,22 @@ const TreeNode = ({ node, onToggle, theIndex }) => {
 
 // Componente principal
 const TreeView = () => {
-  const [rootNodes, setRootNodes] = useState([]);
   const [expandedNodes, setExpandedNodes] = useState(new Set());
+  const [filteredData, setFilteredData] = useState([]);
+  const [formFilter, setFormFilter] = useState({
+    label: "",
+    name: "",
+    code: "",
+  });
 
-  useEffect(() => {
-    const fetchRootNodes = async () => {
-      try {
-        const result = await fetchBackend("/graph/", "GET");
-        setRootNodes(result);
-      } catch (error) {
-        console.error('Error fetching root nodes:', error);
-      }
-    };
-
-    fetchRootNodes();
-  }, []);
+  async function getFilteredData() {
+    try {
+      const result = await fetchBackend("/graph/filter-nodes", "GET", {}, formFilter, "http://localhost:8000");
+      setFilteredData(result);
+    } catch (error) {
+      console.error('Error fetching root nodes:', error);
+    }
+  }
 
   const handleToggle = (nodeId) => {
     setExpandedNodes(prev => {
@@ -259,8 +261,20 @@ const TreeView = () => {
 
   return (
     <div>
-      <h1>Árbol de Datos</h1>
-      {rootNodes.map((node, index) => (
+      <Box p={5}>
+        <h1>Árbol de Datos</h1>
+        <FiltersSection
+          getFilteredData={getFilteredData}
+          setFormFilter={setFormFilter}
+          formFilter={formFilter}
+        />
+      </Box>
+      {
+        filteredData.length === 0 && <Box textAlign="center">
+          <h3>Filtra los nodos iniciales para la visualización</h3>
+        </Box>
+      }
+      {filteredData.map((node, index) => (
         <TreeNode
           key={node.properties.code}
           node={node}

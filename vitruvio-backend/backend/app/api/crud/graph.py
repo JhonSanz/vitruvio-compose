@@ -18,23 +18,24 @@ def create_graph(data_model: DataModel):
 
 @db.transaction
 def create_insumo(data_model: DataInsumos):
-    processed_params = {item.name:item.value for item in data_model.nodeParams}
-    processed_params["name"] = data_model.name
-    code = f"{clean_string(s=data_model.name)}_{clean_string(s=data_model.type)}"
-    node = ItemCreate(label=data_model.type, code=code, name=data_model.name, properties=processed_params)
+    # processed_params = {item.name:item.value for item in data_model.nodeParams}
+    # processed_params["name"] = data_model.name
+    # code = f"{clean_string(s=data_model.name)}_{clean_string(s=data_model.type)}"
+    # node = ItemCreate(label=data_model.type, code=code, name=data_model.name, properties=processed_params)
     
-    item_found = get_item_by_code(item_id=code)
-    if item_found:
-        raise Exception(F"Item code {code} already exists")
+    # item_found = get_item_by_code(item_id=code)
+    # if item_found:
+    #     raise Exception(F"Item code {code} already exists")
 
-    create_item(item=node)
-    for rel in data_model.nodeRelations:
-        create_relation_graph(relation=RelationCreateInsumo(
-            relation_name="BELONGS",
-            origin_code=node.code,
-            target_code=rel.related,
-            properties=rel.params
-        ))
+    # create_item(item=node)
+    # for rel in data_model.nodeRelations:
+    #     create_relation_graph(relation=RelationCreateInsumo(
+    #         relation_name="BELONGS",
+    #         origin_code=node.code,
+    #         target_code=rel.related,
+    #         properties=rel.params
+    #     ))
+    print(data_model)
 
 
 def show_nodes(*, direction: str):
