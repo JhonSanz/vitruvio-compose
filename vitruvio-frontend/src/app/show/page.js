@@ -93,9 +93,12 @@ function ShowNodeDetails({ label, data, incomingEdges, setIncomingEdges }) {
             <div style={{ flex: 2 }}>{value}</div>
           </div>
         ))}
-      </div><br />
+      </div>
+      <br />
+      <hr />
+      <br />
       <h4>Current bindings</h4>
-      <div style={{ border: "1px dotted black" }}>
+      <div style={{ border: "1px dotted gray", backgroundColor: "#fafafa" }}>
         {
           incomingEdges.map((item, index) => (
             <div key={`${item.source.code}${index}`}>
@@ -123,9 +126,13 @@ function ShowNodeDetails({ label, data, incomingEdges, setIncomingEdges }) {
             </div>
           ))
         }
-      </div><br />
+      </div><br /><br />
+      <hr />
+      <br />
       <h4>New bindings</h4>
       <Mercar ref={mercarRef} />
+      <br /><br />
+      <hr />
       <br />
       <Button color="primary" variant="contained" onClick={() => handleSetNewRelations()}>Guardar</Button>
     </div>
@@ -240,7 +247,11 @@ const TreeView = () => {
 
   async function getFilteredData() {
     try {
-      const result = await fetchBackend("/graph/filter-nodes", "GET", {}, formFilter, "http://localhost:8000");
+      const finalFilters = {
+        ...formFilter,
+        label: formFilter.label.name
+      };
+      const result = await fetchBackend("/graph/filter-nodes", "GET", {}, finalFilters, "http://localhost:8000");
       setFilteredData(result);
     } catch (error) {
       console.error('Error fetching root nodes:', error);

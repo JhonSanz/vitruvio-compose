@@ -58,7 +58,11 @@ export default function Filter() {
 
   async function getFilteredData() {
     try {
-      const result = await fetchBackend("/graph/filter-nodes", "GET", {}, formFilter, "http://localhost:8000");
+      const finalFilters = {
+        ...formFilter,
+        label: formFilter.label.name
+      };
+      const result = await fetchBackend("/graph/filter-nodes", "GET", {}, finalFilters, "http://localhost:8000");
       setFilteredData(result);
     } catch (error) {
       console.error('Error fetching root nodes:', error);

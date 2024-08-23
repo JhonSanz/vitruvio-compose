@@ -110,10 +110,10 @@ const Mercar = forwardRef(function Mercar({ }, ref) {
 
   return (
     <Box>
-      <Box sx={{ padding: "25px", backgroundColor: "#fafafa" }}>
+      <Box sx={{ padding: "25px", backgroundColor: "#fafafa", border: "1px dotted gray" }}>
         {
           purchase.map((item, index) => (
-            <Box key={`${item}${index}`}>
+            <Box key={`${item}${index}`} style={{ borderBottom: index === purchase.length - 1 ? "" : "1px dotted gray" }} pb={4} mb={4}>
               <Box display="flex" mb={3}>
                 <Box style={{ padding: 10, width: "100%" }}>
                   <AsyncAutocomplete
@@ -138,14 +138,13 @@ const Mercar = forwardRef(function Mercar({ }, ref) {
                   />
                 </Box>
               </Box>
-              <hr />
             </Box>
           ))
         }
-      </Box>
-      <Box display="flex">
-        <Button color="secondary" size='small' variant="contained" onClick={() => addRelation()}>Add</Button>
-        {purchase.length > 1 && <Button color="secondary" size='small' variant="contained" onClick={() => removeRelation()}>Remove</Button>}
+        <Box display="flex">
+          <Button color="secondary" size='small' variant="contained" onClick={() => addRelation()}>Add</Button>
+          {purchase.length > 1 && <Button color="secondary" size='small' variant="contained" onClick={() => removeRelation()}>Remove</Button>}
+        </Box>
       </Box>
     </Box>
   )

@@ -7,7 +7,7 @@ def get_entity(*, entity_id: int):
     pass
 
 def get_entities(*, skip: int = 0, limit: int = 10):
-    query = "CALL db.labels()"
+    query = "CALL db.labels() YIELD label RETURN label ORDER BY label"
     try:
         result, _ = db.cypher_query(query)
         labels = [{"name": record[0]} for record in result]
