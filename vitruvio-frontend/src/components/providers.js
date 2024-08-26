@@ -25,7 +25,7 @@ export default function Providers({ children }) {
   return (
     <div>
       <ThemeContext.Provider value={valuesProvider}>
-        <ToolbarApp />
+        {/* <ToolbarApp /> */}
         {children}
         <ModalApp
           isOpen={isAlertOpened}

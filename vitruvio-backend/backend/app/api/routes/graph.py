@@ -61,7 +61,8 @@ def delete_node(data_model: NodeDelete):
 def filter_nodes(
     label: Optional[str] = Query(None),
     name: Optional[str] = Query(None),
-    code: Optional[str] = Query(None)                 
+    param_name: Optional[str] = Query(None),
+    param_value: Optional[str] = Query(None),
 ):
-    params = NodeFiltering(label=label, name=name, code=code)
+    params = NodeFiltering(label=label, name=name, param_name=param_name, param_value=param_value)
     return crud_graph.filter_nodes(params=params)

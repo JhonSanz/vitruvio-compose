@@ -10,6 +10,7 @@ import MenuItem from '@mui/material/MenuItem';
 import fetchBackend from "@/utils/commonFetch";
 import Button from '@mui/material/Button';
 import Autocomplete from '@mui/material/Autocomplete';
+import ForestIcon from '@mui/icons-material/Forest';
 
 
 export default function FiltersSection({
@@ -43,56 +44,75 @@ export default function FiltersSection({
   }, []);
 
   return (
-    <Box mb={2} display="flex">
-      {
-        labels && <Box width="100%" p={1}>
-          <Autocomplete
-            disablePortal
-            id="combo-box-demo"
-            options={labels}
-            getOptionLabel={(option) => option.name}
-            isOptionEqualToValue={(option, value) => option.name === value.name}
+    <Box style={{ backgroundColor: "#fafafa", padding: "20px" }}>
+      <Box mb={2} display="flex">
+        {
+          labels && <Box width="100%" p={1}>
+            <Autocomplete
+              disablePortal
+              id="combo-box-demo"
+              options={labels}
+              getOptionLabel={(option) => option.name}
+              isOptionEqualToValue={(option, value) => option.name === value.name}
+              fullWidth
+              size='small'
+              renderInput={(params) => <TextField {...params} label="Label" />}
+              value={formFilter["label"] || null}
+              onChange={(_, value) => handleFormFilterChange({
+                target: {
+                  name: "label",
+                  value: { name: value?.name || "" }
+                }
+              })}
+              name="label"
+            />
+          </Box>
+        }
+        <Box width="100%" p={1}>
+          <TextField
             fullWidth
-            size='small'
-            renderInput={(params) => <TextField {...params} label="Movie" />}
-            value={formFilter["label"] || null}
-            onChange={(_, value) => handleFormFilterChange({
-              target: {
-                name: "label",
-                value: { name: value?.name || "" }
-              }
-            })}
-            name="label"
+            size="small"
+            id="outlined-basic"
+            label="Name"
+            variant="outlined"
+            type='text'
+            name="name"
+            value={formFilter["name"]}
+            onChange={(e) => handleFormFilterChange(e)}
           />
         </Box>
-      }
-      <Box width="100%" p={1}>
-        <TextField
-          fullWidth
-          size="small"
-          id="outlined-basic"
-          label="Name"
-          variant="outlined"
-          type='text'
-          name="name"
-          value={formFilter["name"]}
-          onChange={(e) => handleFormFilterChange(e)}
-        />
+        <Box width="100%" p={1}>
+          <TextField
+            fullWidth
+            sx={{ paddingBottom: 2 }}
+            size="small"
+            id="outlined-basic"
+            label="Param name"
+            variant="outlined"
+            type='text'
+            name="param_name"
+            value={formFilter["param_name"]}
+            onChange={(e) => handleFormFilterChange(e)}
+          />
+          <TextField
+            fullWidth
+            size="small"
+            id="outlined-basic"
+            label="Param value"
+            variant="outlined"
+            type='text'
+            name="param_value"
+            value={formFilter["param_value"]}
+            onChange={(e) => handleFormFilterChange(e)}
+          />
+        </Box>
       </Box>
-      <Box width="100%" p={1}>
-        <TextField
-          fullWidth
-          size="small"
-          id="outlined-basic"
-          label="Code"
-          variant="outlined"
-          type='text'
-          name="code"
-          value={formFilter["code"]}
-          onChange={(e) => handleFormFilterChange(e)}
-        />
-      </Box>
-      <Button variant="contained" color="primary" onClick={() => getFilteredData()}>Buscar</Button>
+      <Button
+        startIcon={<ForestIcon />}
+        variant="contained"
+        color="primary"
+        onClick={() => getFilteredData()}
+      >Buscar</Button>
     </Box>
   )
 }

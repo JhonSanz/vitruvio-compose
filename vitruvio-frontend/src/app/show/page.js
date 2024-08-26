@@ -5,7 +5,7 @@ import Box from '@mui/material/Box';
 import fetchBackend from "@/utils/commonFetch";
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import { ThemeContext } from '@/components/providers';
-import { Mercar } from '../prototype/page';
+import Prototype, { Mercar } from '../prototype/page';
 import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -16,6 +16,8 @@ import ModalApp from '@/components/modal';
 import FiltersSection from '@/components/prototype/filtersSection';
 import TextField from '@mui/material/TextField';
 import { ParamsPicker } from '../prototype/page';
+import Fab from '@mui/material/Fab';
+import AddIcon from '@mui/icons-material/Add';
 
 
 function ShowNodeDetails({ label, data, incomingEdges, setIncomingEdges }) {
@@ -153,6 +155,7 @@ function ShowNodeDetails({ label, data, incomingEdges, setIncomingEdges }) {
           <h5>{data.name} no tiene relaciones</h5>
         </div>
       }
+      <br />
       {
         incomingEdges.length > 0 && (
           <div style={{ border: "1px dotted gray", backgroundColor: "#fafafa" }}>
@@ -299,13 +302,18 @@ const TreeView = () => {
     label: "",
     name: "",
     code: "",
+    param_name: "",
+    param_value: "",
   });
+  const [isAlertOpened, setIsAlertOpened] = useState(false);
+  const [alertContent, setAlertContent] = useState(null);
+
 
   async function getFilteredData() {
     try {
       const finalFilters = {
         ...formFilter,
-        label: formFilter.label.name
+        label: formFilter.label.name || ""
       };
       const result = await fetchBackend("/graph/filter-nodes", "GET", {}, finalFilters, "http://localhost:8000");
       setFilteredData(result);
@@ -326,10 +334,14 @@ const TreeView = () => {
     });
   };
 
+  function handleOpenCreateModal() {
+    setAlertContent(<Prototype />)
+    setIsAlertOpened(true);
+  }
+
   return (
     <div>
       <Box p={5}>
-        <h1>Árbol de Datos</h1>
         <FiltersSection
           getFilteredData={getFilteredData}
           setFormFilter={setFormFilter}
@@ -350,6 +362,23 @@ const TreeView = () => {
           theIndex={`${index + 1}.`}
         />
       ))}
+      <ModalApp
+        isOpen={isAlertOpened}
+        setIsOpen={setIsAlertOpened}
+        children={alertContent}
+      />
+      <Fab
+        color="primary"
+        aria-label="add"
+        onClick={() => handleOpenCreateModal()}
+        style={{
+          position: 'absolute',
+          bottom: 36,
+          right: 36,
+        }}
+      >
+        <AddIcon />
+      </Fab>
     </div>
   );
 };

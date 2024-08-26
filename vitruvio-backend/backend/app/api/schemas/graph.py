@@ -51,4 +51,5 @@ class NodeDelete(BaseModel):
 class NodeFiltering(BaseModel):
     label: str | None
     name: str | None
-    code: str | None
+    param_name: str | None
+    param_value: str | None

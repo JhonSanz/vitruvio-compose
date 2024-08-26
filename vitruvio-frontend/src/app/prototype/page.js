@@ -213,9 +213,7 @@ export default function Prototype() {
   }
 
   return (
-    <Box
-      sx={{ padding: "50px", border: "1px dotted black", borderRadius: "5px" }}
-    >
+    <Box>
       <h2>CREACION DE INSUMOS</h2>
       <Box mb={2}>
         <TextField

@@ -188,14 +188,16 @@ def filter_nodes(*, params: NodeFiltering):
 
     if params.label:
         conditions.append(f"n:{params.label}")
-    if params.code:
-        conditions.append(f"n.code CONTAINS '{params.code}'")
     if params.name:
         conditions.append(f"n.name CONTAINS '{params.name}'")
+    if params.param_name and params.param_value:
+        conditions.append(f"n.{params.param_name} CONTAINS '{params.param_value}'")
+
     if conditions:
         query += " WHERE " + " AND ".join(conditions)
     query += " RETURN n"
 
+    print(params)
     print(query)
     try:
         result, _ = db.cypher_query(query)
