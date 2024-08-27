@@ -19,7 +19,7 @@ function ModalApp({
     transform: 'translate(-50%, -50%)',
     width: "90%",
     maxWidth: maxWidth,
-    maxHeight: "90%",
+    maxHeight: "80%",
     bgcolor: 'background.paper',
     border: '1px solid #000',
     boxShadow: 24,

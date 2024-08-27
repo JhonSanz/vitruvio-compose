@@ -372,7 +372,7 @@ const TreeView = () => {
         aria-label="add"
         onClick={() => handleOpenCreateModal()}
         style={{
-          position: 'absolute',
+          position: 'fixed',
           bottom: 36,
           right: 36,
         }}
