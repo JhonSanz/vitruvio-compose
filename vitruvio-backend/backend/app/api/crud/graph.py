@@ -1,6 +1,6 @@
 from neomodel import db
 from typing import List
-from backend.app.api.crud.item import create_item, get_item_by_code
+from backend.app.api.crud.item import create_item, get_item_by_code, get_item_by_name
 from backend.app.api.crud.relation import create_relation_graph
 from backend.app.api.schemas.graph import DataModel, DataInsumos, NodeUpdateRelations, NodeFiltering, NodeDetails
 from backend.app.api.schemas.item import ItemCreate
@@ -28,8 +28,12 @@ def create_insumo(data_model: DataInsumos):
 
     node = ItemCreate(label=processed_labels, code=code, name=data_model.name, properties=processed_params)
 
-    item_found = get_item_by_code(item_id=code)
-    if item_found:
+    item_found_by_name = get_item_by_name(item_name=data_model.name)
+    if item_found_by_name:
+        raise Exception(F"Item name {data_model.name} already exists")
+
+    item_found_by_code = get_item_by_code(item_id=code)
+    if item_found_by_code:
         raise Exception(F"Item code {code} already exists")
 
     create_item(item=node)

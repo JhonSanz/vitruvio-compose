@@ -31,6 +31,20 @@ def get_item_by_code(*, item_id: str) -> Item:
         return None
 
 
+
+def get_item_by_name(*, item_name: str) -> Item:
+    query = f"MATCH (n {{name: \"{item_name}\"}}) RETURN n"
+    try:
+        result, _ = db.cypher_query(query)
+        if not result:
+            return None
+        node = result[0][0]
+        return extract_node_properties(node)
+    except Exception as e:
+        print(f"Failed to fetch item: {str(e)}")
+        return None
+
+
 def get_items_by_code_or_name(*, item_id: str = "", item_name: str = "") -> Item:
     query = (
         "MATCH (n) "
