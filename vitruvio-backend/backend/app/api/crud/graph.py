@@ -55,15 +55,23 @@ def create_insumo(data_model: DataInsumos):
 
 
 def show_nodes(*, direction: str):
-    query = (
-        "MATCH (n) "
-        "WHERE NOT (n)-->() "
-        "RETURN n "
-    )
+    # query = (
+    #     "MATCH (n) "
+    #     "WHERE NOT (n)-->() "
+    #     "RETURN n "
+    # )
+    
+    query = "MATCH (n) OPTIONAL MATCH (n)<-[r]-() RETURN n AS node, COUNT(r) AS numRelations"
 
     try:
         result, _ = db.cypher_query(query)
-        nodes = [extract_node_properties(record[0]) for record in result]
+        print(result)
+        nodes = []
+        for record in result:
+            node = extract_node_properties(record[0])
+            node["is_leaf"] = record[1] == 0
+            nodes.append(node)
+        # nodes = [extract_node_properties(record[0]) for record in result]
         return nodes
     except Exception as e:
         print(f"Failed to fetch nodes: {str(e)}")
@@ -73,20 +81,25 @@ def show_nodes(*, direction: str):
 def get_node_children(*, code: str, direction: Direction):
     if direction == Direction.down:
         query = (
-            "MATCH (n {code: $code})"
-            "<-[*1]-(m) "
-            "RETURN DISTINCT m"
+            "MATCH (n {code: $code})<-[*1]-(m) "
+            "OPTIONAL MATCH (m)<-[r]-() "
+            "RETURN DISTINCT m, COUNT(r) AS numRelations"
         )
     else:
         query = (
-            "MATCH (n {code: $code})"
-            "-[*1]->(m) "
-            "RETURN DISTINCT m"
+            "MATCH (n {code: $code})-[*1]->(m) "
+            "OPTIONAL MATCH (m)<-[r]-() "
+            "RETURN DISTINCT m, COUNT(r) AS numRelations"
         )
     params = { "code": code }
     try:
         result, _ = db.cypher_query(query, params)
-        nodes = [extract_node_properties(record[0]) for record in result]
+        nodes = []
+        for record in result:
+            node = extract_node_properties(record[0])
+            node["is_leaf"] = record[1] == 0
+            nodes.append(node)
+        # nodes = [extract_node_properties(record[0]) for record in result]
         return nodes
     except Exception as e:
         print(f"Failed to fetch nodes: {str(e)}")
@@ -201,7 +214,9 @@ def delete_node(*, node_code: str):
 
 
 def filter_nodes(*, params: NodeFiltering):
-    query = "MATCH (n)"
+    query = (
+        "MATCH (n) "
+    )
     conditions = []
 
     if params.label:
@@ -213,13 +228,20 @@ def filter_nodes(*, params: NodeFiltering):
 
     if conditions:
         query += " WHERE " + " AND ".join(conditions)
-    query += " RETURN n"
+    
+    query += " OPTIONAL MATCH (n)<-[r]-() "
+    query += " RETURN n, COUNT(r) AS numRelations"
 
     print(params)
     print(query)
     try:
         result, _ = db.cypher_query(query)
-        nodes = [extract_node_properties(record[0]) for record in result]
+        print(result)
+        nodes = []
+        for record in result:
+            node = extract_node_properties(record[0])
+            node["is_leaf"] = record[1] == 0
+            nodes.append(node)
         return nodes
     except Exception as e:
         print(f"Failed to fetch nodes: {str(e)}")

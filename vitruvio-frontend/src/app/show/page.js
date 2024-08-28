@@ -289,7 +289,7 @@ const TreeNode = ({ node, onToggle, theIndex, direction }) => {
           }
         </div>
       )}
-      <div style={{ display: "flex", justifyContent: "start" }}>
+      <div style={{ display: "flex", justifyContent: "start", backgroundColor: node.is_leaf ? "#d0f3d0" : ""  }}>
         <div style={{ marginRight: "10px" }}><b>{theIndex}</b></div>
         <div><small style={{ fontStyle: "italic" }}>{node.labels.join(", ")}</small> {node.properties.name}</div>
         <div style={{ cursor: 'pointer', marginLeft: "10px", display: "flex" }}>

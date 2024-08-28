@@ -5,6 +5,7 @@ from typing import Any, Dict, List
 class ItemBase(BaseModel):
     labels: List[str]
     properties: Dict[str, Any]
+    is_leaf: bool
 
 
 class ItemCreate(BaseModel):
