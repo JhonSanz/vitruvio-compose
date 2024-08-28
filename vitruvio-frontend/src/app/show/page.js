@@ -201,9 +201,10 @@ function ShowNodeDetails({ label, data, incomingEdges, setIncomingEdges }) {
 
 
 // Componente para renderizar un nodo del árbol
-const TreeNode = ({ node, onToggle, theIndex }) => {
+const TreeNode = ({ node, onToggle, theIndex, direction }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [children, setChildren] = useState([]);
+  const [childrenUpstairs, setChildrenUpstairs] = useState([]);
   const [incomingEdges, setIncomingEdges] = useState([]);
   const [loading, setLoading] = useState(false);
   const [modalReady, setModalReady] = useState(false);
@@ -216,9 +217,18 @@ const TreeNode = ({ node, onToggle, theIndex }) => {
         setLoading(true);
         try {
           // const response = [{ properties: { code: "test", name: "Aqui estoy" } }]
-          const response = await fetchBackend("/graph/node-children", "GET", {}, { node_code: node.properties.code });
-
+          const response = await fetchBackend("/graph/node-children", "GET", {}, {
+            node_code: node.properties.code,
+            direction: "down"
+          });
           setChildren(response);
+
+          const responseUpstairs = await fetchBackend("/graph/node-children", "GET", {}, {
+            node_code: node.properties.code,
+            direction: "up"
+          });
+          setChildrenUpstairs(responseUpstairs);
+
         } catch (error) {
           console.error('Error fetching children:', error);
         } finally {
@@ -260,6 +270,25 @@ const TreeNode = ({ node, onToggle, theIndex }) => {
 
   return (
     <div style={{ marginLeft: '30px', padding: "10px", width: "400px" }}>
+      {isExpanded && (
+        <div>
+          {loading && <p>Cargando...</p>}
+          {
+            !loading && ["both", "up"].includes(direction) && <div>
+              {childrenUpstairs.map((child, index) => (
+                <TreeNode
+                  key={child.id}
+                  node={child}
+                  onToggle={onToggle}
+                  // expandedNodes={expandedNodes}
+                  theIndex={`${theIndex}${index + 1}.`}
+                  direction="up"
+                />
+              ))}
+            </div>
+          }
+        </div>
+      )}
       <div style={{ display: "flex", justifyContent: "start" }}>
         <div style={{ marginRight: "10px" }}><b>{theIndex}</b></div>
         <div><small style={{ fontStyle: "italic" }}>{node.labels.join(", ")}</small> {node.properties.name}</div>
@@ -270,8 +299,9 @@ const TreeNode = ({ node, onToggle, theIndex }) => {
       </div>
       {isExpanded && (
         <div>
-          {loading ? <p>Cargando...</p> : (
-            <div>
+          {loading && <p>Cargando...</p>}
+          {
+            !loading && ["both", "down"].includes(direction) && <div>
               {children.map((child, index) => (
                 <TreeNode
                   key={child.id}
@@ -279,10 +309,11 @@ const TreeNode = ({ node, onToggle, theIndex }) => {
                   onToggle={onToggle}
                   // expandedNodes={expandedNodes}
                   theIndex={`${theIndex}${index + 1}.`}
+                  direction="down"
                 />
               ))}
             </div>
-          )}
+          }
         </div>
       )}
       <ModalApp
@@ -360,6 +391,7 @@ const TreeView = () => {
           onToggle={handleToggle}
           expandedNodes={expandedNodes}
           theIndex={`${index + 1}.`}
+          direction="both"
         />
       ))}
       <ModalApp

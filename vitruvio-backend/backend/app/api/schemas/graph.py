@@ -1,6 +1,11 @@
 from typing import List, Optional
 from pydantic import BaseModel
+from enum import Enum
 
+
+class Direction(str, Enum):
+    up = "up"
+    down = "down"
 
 
 class DataEntry(BaseModel):

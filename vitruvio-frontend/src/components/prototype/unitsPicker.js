@@ -256,6 +256,8 @@ function UnitsPicker({ handleAddNewItem }) {
           value={formValues["name"]}
           onChange={(e) => handleFormChange(e)}
           required
+          error={formValues["name"] === ""}
+          helperText="Nombre de la propiedad del objeto, ejemplo: color"
         />
         <FormControl size='small' fullWidth>
           <InputLabel id="demo-simple-select-label">Mode</InputLabel>

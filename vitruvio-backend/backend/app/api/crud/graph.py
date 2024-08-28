@@ -2,7 +2,14 @@ from neomodel import db
 from typing import List
 from backend.app.api.crud.item import create_item, get_item_by_code, get_item_by_name
 from backend.app.api.crud.relation import create_relation_graph
-from backend.app.api.schemas.graph import DataModel, DataInsumos, NodeUpdateRelations, NodeFiltering, NodeDetails
+from backend.app.api.schemas.graph import (
+    DataModel,
+    DataInsumos,
+    NodeUpdateRelations,
+    NodeFiltering,
+    NodeDetails,
+    Direction
+)
 from backend.app.api.schemas.item import ItemCreate
 from backend.app.api.schemas.relation import RelationCreateInsumo
 from backend.app.api.utils.node_format import extract_node_properties
@@ -63,12 +70,19 @@ def show_nodes(*, direction: str):
         return []
 
 
-def get_node_children(*, code: str):
-    query = (
-        "MATCH (n {code: $code})"
-        "<-[*1]-(m) "
-        "RETURN DISTINCT m"
-    )
+def get_node_children(*, code: str, direction: Direction):
+    if direction == Direction.down:
+        query = (
+            "MATCH (n {code: $code})"
+            "<-[*1]-(m) "
+            "RETURN DISTINCT m"
+        )
+    else:
+        query = (
+            "MATCH (n {code: $code})"
+            "-[*1]->(m) "
+            "RETURN DISTINCT m"
+        )
     params = { "code": code }
     try:
         result, _ = db.cypher_query(query, params)

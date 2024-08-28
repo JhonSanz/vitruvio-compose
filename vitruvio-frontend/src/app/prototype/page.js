@@ -13,6 +13,9 @@ import fetchBackend from "@/utils/commonFetch";
 import AsyncAutocomplete from '@/components/prototype/asyncAutocomplete';
 import Button from '@mui/material/Button';
 import UnitsPicker from '@/components/prototype/unitsPicker';
+import FormGroup from '@mui/material/FormGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Switch from '@mui/material/Switch';
 
 
 export function ParamsPicker({
@@ -224,6 +227,9 @@ export default function Prototype() {
           variant="outlined"
           value={formInsumo["name"]}
           onChange={handleChangeInsumoForm}
+          required
+          helperText="Nombre del objeto que se está creando, ejemplo: Mitocondria"
+          error={formInsumo["name"] === ""}
         />
       </Box>
       <Box mb={2}>
@@ -243,38 +249,23 @@ export default function Prototype() {
           variant="outlined"
           value={formInsumo["type"]}
           onChange={handleChangeInsumoForm}
+          required
+          helperText="Categorías a las cuales pertenece el objeto, ejemplo: celulas,partes_celula"
+          error={formInsumo["type"] === ""}
         />
       </Box>
-      {/* <Box mb={2}>
-        <TextField
-          fullWidth
-          id="outlined-basic"
-          label="Code"
-          name="code"
-          variant="outlined"
-          value={formInsumo["code"]}
-          onChange={handleChangeInsumoForm}
+      <FormGroup>
+        <FormControlLabel
+          control={
+            <Switch
+              checked={itemType === "shopping"}
+              onChange={() => setItemType(itemType === "shopping" ? "fundamental" : "shopping")}
+              inputProps={{ 'aria-label': 'controlled' }}
+            />
+          }
+          label="¿Mercar?"
         />
-      </Box> */}
-      <FormControl fullWidth>
-        <InputLabel id="demo-simple-select-label">Mode</InputLabel>
-        <Select
-          labelId="demo-simple-select-label"
-          id="demo-simple-select"
-          value={itemType}
-          label="itemType"
-          onChange={handleChange}
-        >
-          <MenuItem value={"fundamental"}>Supply</MenuItem>
-          <MenuItem value={"shopping"}>Mercar</MenuItem>
-          {/* <MenuItem value={"int_std"}>Estándar internacional</MenuItem>
-          <MenuItem value={"formula_optional"}>Fórmula a veces</MenuItem>
-          <MenuItem value={"formula_mandatory"}>Fórmula</MenuItem> */}
-          {/* // grilla */}
-          {/* sinonimos */}
-          {/* <MenuItem value={"homologacion"}>Homologacion</MenuItem> */}
-        </Select>
-      </FormControl>
+      </FormGroup>
       {
         itemType === "shopping" && <Mercar ref={mercarRef} />
       }

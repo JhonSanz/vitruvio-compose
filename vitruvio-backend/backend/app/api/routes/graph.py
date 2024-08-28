@@ -1,7 +1,14 @@
 from typing import List, Optional
 from fastapi import APIRouter, HTTPException, Query
 from backend.app.api.crud import graph as crud_graph
-from backend.app.api.schemas.graph import DataModel, DataInsumos, NodeUpdateRelations, NodeDelete, NodeFiltering
+from backend.app.api.schemas.graph import (
+    DataModel,
+    DataInsumos,
+    NodeUpdateRelations,
+    NodeDelete,
+    NodeFiltering,
+    Direction
+)
 from backend.app.api.crud.item import Item
 
 
@@ -23,8 +30,8 @@ def get_items(direction: str | None = None):
 
 
 @router.get("/node-children", response_model=List[Item])
-def get_node_children(node_code: str):
-    return crud_graph.get_node_children(code=node_code)
+def get_node_children(node_code: str, direction: Direction):
+    return crud_graph.get_node_children(code=node_code, direction=direction)
 
 
 @router.get("/node-incoming-edges")

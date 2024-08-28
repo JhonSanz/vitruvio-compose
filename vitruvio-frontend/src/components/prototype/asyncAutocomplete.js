@@ -20,6 +20,11 @@ export default function AsyncAutocomplete({ value, setValue }) {
     }
   }, [currentText]);
 
+
+  useEffect(() => {
+    console.log("value", value)
+  }, [value]);
+
   useEffect(() => {
     async function init() {
       if (doFetchBackend && currentText !== "") {
@@ -71,6 +76,7 @@ export default function AsyncAutocomplete({ value, setValue }) {
           label="Bind"
           value={value}
           helperText="Presione ENTER para buscar"
+          error={value === null || Object.keys(value).length === 0}
           InputProps={{
             ...params.InputProps,
             endAdornment: (
