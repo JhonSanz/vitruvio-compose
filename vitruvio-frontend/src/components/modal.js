@@ -1,8 +1,10 @@
 import '@/styles/modal.css'
 import { useEffect, useRef } from 'react';
+import IconButton from '@mui/material/IconButton';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
+import CloseIcon from '@mui/icons-material/Close';
 
 
 function ModalApp({
@@ -24,18 +26,32 @@ function ModalApp({
     border: '1px solid #000',
     boxShadow: 24,
     p: 4,
-    overflowY: "scroll"
+    overflowY: "scroll",
+    paddingTop: 0
   };
+
+  const headerStyle = {
+    position: "sticky",
+    top: 0,
+    backgroundColor: "$fff",
+    zIndex: 999,
+    textAlign: "end",
+    paddingTop: "10px"
+  }
 
   return (
     <Modal
       open={isOpen}
-      onClose={() => setIsOpen(false)}
+      // onClose={() => setIsOpen(false)}
       aria-labelledby="modal-modal-title"
       aria-describedby="modal-modal-description"
     >
       <Box sx={style}>
-        <Typography id="modal-modal-title" variant="h6" component="h2"></Typography>
+        <Typography id="modal-modal-title" variant="h6" component="h2" style={headerStyle}>
+          <IconButton aria-label="delete">
+            <CloseIcon onClick={() => setIsOpen(false)} />
+          </IconButton>
+        </Typography>
         {children}
       </Box>
     </Modal>
