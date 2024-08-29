@@ -227,19 +227,19 @@ function UnitsPicker({ handleAddNewItem }) {
     setFormValues(copiedForm);
   }
 
+  function validateForm() {
+    if (itemType === "uis") return formValues.name !== "" && selectedUnit !== undefined
+    if (itemType === "scales") return formValues.name !== "" && selectedScale !== undefined
+    if (itemType === "no_unit") return formValues.name !== ""
+  }
+
   function handleSubmit() {
-    if (itemType === "uis") {
-      if (formValues.name !== "" && selectedUnit !== undefined) handleAddNewItem({
-        ...formValues, value: `${formValues.value}${selectedUnit.symbol}`
-      });
-    } else if (itemType === "scales") {
-      if (formValues.name !== "" && selectedScale !== undefined) handleAddNewItem({
-        name: formValues.name, value: selectedScale.value
-      });
-    } else if (itemType === "no_unit") {
-      if (formValues.name !== "") handleAddNewItem({
-        name: formValues.name, value: formValues.value
-      });
+    if (validateForm()) {
+      handleAddNewItem({ ...formValues, value: `${formValues.value}${selectedUnit.symbol}` });
+    } else if (validateForm()) {
+      handleAddNewItem({ name: formValues.name, value: selectedScale.value });
+    } else if (validateForm()) {
+      handleAddNewItem({ name: formValues.name, value: formValues.value });
     }
   }
 
@@ -298,7 +298,13 @@ function UnitsPicker({ handleAddNewItem }) {
       </Box>
 
       <Box mt={2}>
-        <Button color="primary" size='small' variant="contained" onClick={() => handleSubmit()}>Ok</Button>
+        <Button
+          color="primary"
+          size='small'
+          variant="contained"
+          onClick={() => handleSubmit()}
+          disabled={formValues["name"] === "" || !validateForm()}
+        >Ok</Button>
       </Box>
     </Box>
   )

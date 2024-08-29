@@ -270,7 +270,16 @@ export default function Prototype({
         itemType === "shopping" && <Mercar ref={mercarRef} />
       }
       <Box pt={5}>
-        <Button color="primary" variant="contained" disabled={disabledButton} onClick={() => handleSubmitFullForm()}>Save</Button>
+        <Button
+          color="primary"
+          variant="contained"
+          onClick={() => handleSubmitFullForm()}
+          disabled={
+            disabledButton ||
+            formInsumo["name"] === "" ||
+            formInsumo["type"] === ""
+          }
+        >Save</Button>
       </Box>
     </Box>
   )
