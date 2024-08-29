@@ -269,7 +269,7 @@ const TreeNode = ({ node, onToggle, theIndex, direction }) => {
   }, [incomingEdges, modalReady])
 
   return (
-    <div style={{ marginLeft: '30px', padding: "10px", width: "400px" }}>
+    <div style={{ marginLeft: '30px', padding: "10px" }}>
       {isExpanded && (
         <div>
           {loading && <p>Cargando...</p>}
@@ -289,10 +289,24 @@ const TreeNode = ({ node, onToggle, theIndex, direction }) => {
           }
         </div>
       )}
-      <div style={{ display: "flex", justifyContent: "start", backgroundColor: node.is_leaf ? "#d0f3d0" : "" }}>
-        <div style={{ marginRight: "10px" }}><b>{theIndex}</b></div>
-        <div><small style={{ fontStyle: "italic" }}>{node.labels.join(", ")}</small> {node.properties.name}</div>
-        <div style={{ cursor: 'pointer', marginLeft: "10px", display: "flex" }}>
+      <div style={{ display: "flex", justifyContent: "start", alignItems: "center", backgroundColor: node.is_leaf ? "#d0f3d0" : "" }}>
+        <div style={{ marginRight: "10px", marginLeft: "10px" }}><b>{theIndex}</b></div>
+        <div style={{ display: "flex", alignItems: "center" }}>
+          <div style={{ marginRight: "10px", width: "100px" }}>
+            {
+              node.labels.map(item => (
+                <div style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}>
+                  <small style={{ fontStyle: "italic" }}>{item}</small>
+                  <br />
+                </div>
+              ))
+            }
+          </div>
+          <div style={{ marginRight: "10px", width: "250px", textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}>
+            {node.properties.name}
+          </div>
+        </div>
+        <div style={{ cursor: 'pointer', marginLeft: "10px", marginRight: "10px", display: "flex" }}>
           <div><InfoOutlinedIcon onClick={() => getNodeDetail()} fontSize='small' color='primary' /></div>
           <div onClick={handleToggle}>{isExpanded ? '[-]' : '[+]'}</div>
         </div>

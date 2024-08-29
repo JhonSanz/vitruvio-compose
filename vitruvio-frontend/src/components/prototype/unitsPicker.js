@@ -234,11 +234,11 @@ function UnitsPicker({ handleAddNewItem }) {
   }
 
   function handleSubmit() {
-    if (validateForm()) {
+    if (itemType === "uis" && validateForm()) {
       handleAddNewItem({ ...formValues, value: `${formValues.value}${selectedUnit.symbol}` });
-    } else if (validateForm()) {
+    } else if (itemType === "scales" && validateForm()) {
       handleAddNewItem({ name: formValues.name, value: selectedScale.value });
-    } else if (validateForm()) {
+    } else if (itemType === "no_unit" && validateForm()) {
       handleAddNewItem({ name: formValues.name, value: formValues.value });
     }
   }
