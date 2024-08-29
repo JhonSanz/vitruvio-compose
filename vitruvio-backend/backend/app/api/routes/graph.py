@@ -72,3 +72,9 @@ def filter_nodes(
 ):
     params = NodeFiltering(label=label, name=name, param_name=param_name, param_value=param_value)
     return crud_graph.filter_nodes(params=params)
+
+
+@router.get("/convert-code-to-uuid")
+async def convert_code_to_uuid():
+    crud_graph.convert_code_to_uuid()    
+    return True

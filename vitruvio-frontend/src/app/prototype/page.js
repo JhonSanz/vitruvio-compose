@@ -75,7 +75,7 @@ const Mercar = forwardRef(function Mercar({ }, ref) {
   useImperativeHandle(ref, () => {
     return {
       getPurchases() {
-        return purchase;
+        return purchase.filter(item => Object.keys(item.related).length > 0);
       }
     };
   }, [purchase]);
@@ -190,6 +190,7 @@ export default function Prototype({
     switch (itemType) {
       case "shopping":
         let dataPurchases = mercarRef.current.getPurchases();
+        console.log(dataPurchases)
         dataPurchases = dataPurchases.map((item) => {
           if (item.related.properties.code) {
             return {

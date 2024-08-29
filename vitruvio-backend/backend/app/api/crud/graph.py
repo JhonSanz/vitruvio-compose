@@ -1,3 +1,4 @@
+import uuid
 from neomodel import db
 from typing import List
 from backend.app.api.crud.item import create_item, get_item_by_code, get_item_by_name
@@ -30,7 +31,7 @@ def create_insumo(data_model: DataInsumos):
     processed_params["name"] = data_model.name
 
     labels = [clean_string(s=l) for l in data_model.type]
-    code = f"{clean_string(s=data_model.name)}_{'_'.join(labels)}"
+    code = str(uuid.uuid4())
     processed_labels = ":".join(labels)
 
     node = ItemCreate(label=processed_labels, code=code, name=data_model.name, properties=processed_params)
@@ -247,3 +248,26 @@ def filter_nodes(*, params: NodeFiltering):
     except Exception as e:
         print(f"Failed to fetch nodes: {str(e)}")
         return []
+
+
+def convert_code_to_uuid():
+    cypher_query = """
+        MATCH (n)
+        RETURN n
+    """
+    result, _ = db.cypher_query(cypher_query)
+    
+    updates = []
+    for record in result:
+        node = record[0]
+        new_uuid = str(uuid.uuid4())
+        updates.append((node.id, new_uuid))
+    
+    for node_id, new_uuid in updates:
+        update_query = """
+            MATCH (n)
+            WHERE ID(n) = $node_id
+            SET n.code = $new_uuid
+        """
+        db.cypher_query(update_query, {'node_id': node_id, 'new_uuid': new_uuid})
+    return True

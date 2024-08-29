@@ -20,7 +20,14 @@ import Fab from '@mui/material/Fab';
 import AddIcon from '@mui/icons-material/Add';
 
 
-function ShowNodeDetails({ label, data, incomingEdges, setIncomingEdges }) {
+function ShowNodeDetails({
+  label,
+  data,
+  incomingEdges,
+  setIncomingEdges,
+  setIsAlertOpened,
+  getFilteredData
+}) {
   const mercarRef = useRef(null);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [labelPicker, setLabelPicker] = useState(label.join(","));
@@ -43,6 +50,7 @@ function ShowNodeDetails({ label, data, incomingEdges, setIncomingEdges }) {
         ...convertObject(item.relation)
       }
     })
+
     const result2 = mercarRef.current.getPurchases().map(item => {
       if (item.related?.properties) {
         return {
@@ -51,7 +59,7 @@ function ShowNodeDetails({ label, data, incomingEdges, setIncomingEdges }) {
         }
       }
     }).filter(item => item !== undefined)
-    console.log(labelPicker)
+
     const final_data = {
       node: data.code,
       labels: labelPicker.split(","),
@@ -60,7 +68,8 @@ function ShowNodeDetails({ label, data, incomingEdges, setIncomingEdges }) {
     };
     try {
       const result = await fetchBackend("/graph/update-node-relations", "POST", final_data);
-      window.location.reload()
+      getFilteredData({ param_name: "code", param_value: data.code });
+      setIsAlertOpened(false);
     } catch (error) {
       console.error('Error fetching root nodes:', error);
     }
@@ -81,7 +90,7 @@ function ShowNodeDetails({ label, data, incomingEdges, setIncomingEdges }) {
   async function handleDeleteNode() {
     try {
       const result = await fetchBackend("/graph/delete-node", "POST", { node_code: data.code });
-      window.location.reload()
+      // window.location.reload()
     } catch (error) {
       console.error('Error fetching root nodes:', error);
     }
@@ -201,7 +210,13 @@ function ShowNodeDetails({ label, data, incomingEdges, setIncomingEdges }) {
 
 
 // Componente para renderizar un nodo del árbol
-const TreeNode = ({ node, onToggle, theIndex, direction }) => {
+const TreeNode = ({
+  node,
+  onToggle,
+  theIndex,
+  direction,
+  getFilteredData
+}) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [children, setChildren] = useState([]);
   const [childrenUpstairs, setChildrenUpstairs] = useState([]);
@@ -263,6 +278,8 @@ const TreeNode = ({ node, onToggle, theIndex, direction }) => {
         data={node.properties}
         incomingEdges={incomingEdges}
         setIncomingEdges={setIncomingEdges}
+        getFilteredData={getFilteredData}
+        setIsAlertOpened={setIsAlertOpened}
       />)
       setIsAlertOpened(true);
     }
@@ -290,9 +307,9 @@ const TreeNode = ({ node, onToggle, theIndex, direction }) => {
         </div>
       )}
       <div style={{ display: "flex", justifyContent: "start", alignItems: "center" }}>
-        <div style={{ marginRight: "10px", marginLeft: "10px", backgroundColor: "#dfdfdf" }}><b>{theIndex}</b></div>
+        <div style={{ marginRight: "10px", marginLeft: "10px" }}><b>{theIndex}</b></div>
         <div style={{ display: "flex", alignItems: "center" }}>
-          <div style={{ marginRight: "10px", width: "100px" }}>
+          <div style={{ marginRight: "10px", width: "150px", backgroundColor: "#fafafa" }}>
             {
               node.labels.map(item => (
                 <div style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}>
@@ -414,6 +431,7 @@ const TreeView = () => {
           expandedNodes={expandedNodes}
           theIndex={`${index + 1}.`}
           direction="both"
+          getFilteredData={getFilteredData}
         />
       ))}
       <ModalApp
