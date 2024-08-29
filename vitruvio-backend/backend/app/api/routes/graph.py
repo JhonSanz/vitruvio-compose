@@ -42,8 +42,7 @@ def get_node_incoming_edges(node_code: str):
 @router.post("/insumo")
 def create_insumo(data_model: DataInsumos):
     try:
-        crud_graph.create_insumo(data_model)
-        return 200
+        return crud_graph.create_insumo(data_model)
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Failed to create graph {e}")
 

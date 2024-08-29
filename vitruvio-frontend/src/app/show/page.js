@@ -289,7 +289,7 @@ const TreeNode = ({ node, onToggle, theIndex, direction }) => {
           }
         </div>
       )}
-      <div style={{ display: "flex", justifyContent: "start", backgroundColor: node.is_leaf ? "#d0f3d0" : ""  }}>
+      <div style={{ display: "flex", justifyContent: "start", backgroundColor: node.is_leaf ? "#d0f3d0" : "" }}>
         <div style={{ marginRight: "10px" }}><b>{theIndex}</b></div>
         <div><small style={{ fontStyle: "italic" }}>{node.labels.join(", ")}</small> {node.properties.name}</div>
         <div style={{ cursor: 'pointer', marginLeft: "10px", display: "flex" }}>
@@ -340,13 +340,13 @@ const TreeView = () => {
   const [alertContent, setAlertContent] = useState(null);
 
 
-  async function getFilteredData() {
+  async function getFilteredData(paramsFilter = null) {
     try {
       const finalFilters = {
         ...formFilter,
         label: formFilter.label.name || ""
       };
-      const result = await fetchBackend("/graph/filter-nodes", "GET", {}, finalFilters, "http://localhost:8000");
+      const result = await fetchBackend("/graph/filter-nodes", "GET", {}, paramsFilter || finalFilters, "http://localhost:8000");
       setFilteredData(result);
     } catch (error) {
       console.error('Error fetching root nodes:', error);
@@ -366,7 +366,7 @@ const TreeView = () => {
   };
 
   function handleOpenCreateModal() {
-    setAlertContent(<Prototype />)
+    setAlertContent(<Prototype getFilteredData={getFilteredData} setIsAlertOpened={setIsAlertOpened} />)
     setIsAlertOpened(true);
   }
 
@@ -377,6 +377,7 @@ const TreeView = () => {
           getFilteredData={getFilteredData}
           setFormFilter={setFormFilter}
           formFilter={formFilter}
+          filteredData={filteredData}
         />
       </Box>
       {

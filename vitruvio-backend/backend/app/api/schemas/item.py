@@ -1,11 +1,11 @@
 from pydantic import BaseModel
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 
 
 class ItemBase(BaseModel):
     labels: List[str]
     properties: Dict[str, Any]
-    is_leaf: bool
+    is_leaf: Optional[bool] = None
 
 
 class ItemCreate(BaseModel):

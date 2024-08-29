@@ -154,7 +154,10 @@ const Mercar = forwardRef(function Mercar({ }, ref) {
 })
 export { Mercar };
 
-export default function Prototype() {
+export default function Prototype({
+  getFilteredData,
+  setIsAlertOpened
+}) {
   const mercarRef = useRef(null);
   const [disabledButton, setDisabledButton] = useState(false);
   const [itemType, setItemType] = useState("fundamental");
@@ -175,10 +178,6 @@ export default function Prototype() {
   }
 
   const [paramsForm, setParamsForm] = useState([]);
-
-  useEffect(() => {
-    console.log(paramsForm)
-  }, [paramsForm])
 
   async function handleSubmitFullForm() {
     setDisabledButton(true);
@@ -212,7 +211,8 @@ export default function Prototype() {
       return;
     }
     setDisabledButton(false);
-    window.location.reload()
+    getFilteredData({ param_name: "code", param_value: result.properties.code });
+    setIsAlertOpened(false);
   }
 
   return (

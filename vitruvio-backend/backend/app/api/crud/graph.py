@@ -43,7 +43,7 @@ def create_insumo(data_model: DataInsumos):
     if item_found_by_code:
         raise Exception(F"Item code {code} already exists")
 
-    create_item(item=node)
+    created_item = create_item(item=node)
     for rel in data_model.nodeRelations:
         create_relation_graph(relation=RelationCreateInsumo(
             relation_name="BELONGS",
@@ -52,6 +52,7 @@ def create_insumo(data_model: DataInsumos):
             properties=rel.params
         ))
     print(data_model)
+    return created_item
 
 
 def show_nodes(*, direction: str):

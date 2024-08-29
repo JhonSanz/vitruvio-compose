@@ -16,7 +16,8 @@ import ForestIcon from '@mui/icons-material/Forest';
 export default function FiltersSection({
   getFilteredData,
   setFormFilter,
-  formFilter
+  formFilter,
+  filteredData
 }) {
   const [labels, setLabels] = useState([]);
 
@@ -41,7 +42,7 @@ export default function FiltersSection({
       setLabels(unit_types);
     }
     init();
-  }, []);
+  }, [filteredData]);
 
   return (
     <Box style={{ backgroundColor: "#fafafa", padding: "20px" }}>
