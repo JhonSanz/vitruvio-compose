@@ -289,8 +289,8 @@ const TreeNode = ({ node, onToggle, theIndex, direction }) => {
           }
         </div>
       )}
-      <div style={{ display: "flex", justifyContent: "start", alignItems: "center", backgroundColor: node.is_leaf ? "#d0f3d0" : "" }}>
-        <div style={{ marginRight: "10px", marginLeft: "10px" }}><b>{theIndex}</b></div>
+      <div style={{ display: "flex", justifyContent: "start", alignItems: "center" }}>
+        <div style={{ marginRight: "10px", marginLeft: "10px", backgroundColor: "#dfdfdf" }}><b>{theIndex}</b></div>
         <div style={{ display: "flex", alignItems: "center" }}>
           <div style={{ marginRight: "10px", width: "100px" }}>
             {
@@ -302,7 +302,14 @@ const TreeNode = ({ node, onToggle, theIndex, direction }) => {
               ))
             }
           </div>
-          <div style={{ marginRight: "10px", width: "250px", textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}>
+          <div style={{
+            marginRight: "10px",
+            width: "250px",
+            textOverflow: "ellipsis",
+            overflow: "hidden",
+            whiteSpace: "nowrap",
+            color: node.is_leaf ? "#ff00ba" : ""
+          }}>
             {node.properties.name}
           </div>
         </div>
