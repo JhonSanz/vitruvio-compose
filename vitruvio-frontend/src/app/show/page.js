@@ -410,7 +410,7 @@ const TreeView = () => {
 
   return (
     <div>
-      <Box p={5}>
+      <Box p={5} pt={1}>
         <FiltersSection
           getFilteredData={getFilteredData}
           setFormFilter={setFormFilter}

@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import Box from '@mui/material/Box';
+import Grid from '@mui/material/Grid';
 import TextField from '@mui/material/TextField';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
@@ -45,10 +46,10 @@ export default function FiltersSection({
   }, [filteredData]);
 
   return (
-    <Box style={{ backgroundColor: "#fafafa", padding: "20px" }}>
-      <Box mb={2} display="flex">
+    <Grid style={{ borderBottom: "1px dotted #bdbdbd", padding: "20px", textAlign: "center", marginBottom: "10px" }}>
+      <Grid container alignItems="center">
         {
-          labels && <Box width="100%" p={1}>
+          labels && <Grid item xs={3} p={1}>
             <Autocomplete
               disablePortal
               id="combo-box-demo"
@@ -67,9 +68,9 @@ export default function FiltersSection({
               })}
               name="label"
             />
-          </Box>
+          </Grid>
         }
-        <Box width="100%" p={1}>
+        <Grid item xs={3} p={1}>
           <TextField
             fullWidth
             size="small"
@@ -81,11 +82,9 @@ export default function FiltersSection({
             value={formFilter["name"]}
             onChange={(e) => handleFormFilterChange(e)}
           />
-        </Box>
-        <Box width="100%" p={1}>
+        </Grid>
+        <Grid item xs={3} p={1} display="flex">
           <TextField
-            fullWidth
-            sx={{ paddingBottom: 2 }}
             size="small"
             id="outlined-basic"
             label="Param name"
@@ -96,7 +95,6 @@ export default function FiltersSection({
             onChange={(e) => handleFormFilterChange(e)}
           />
           <TextField
-            fullWidth
             size="small"
             id="outlined-basic"
             label="Param value"
@@ -106,14 +104,16 @@ export default function FiltersSection({
             value={formFilter["param_value"]}
             onChange={(e) => handleFormFilterChange(e)}
           />
-        </Box>
-      </Box>
-      <Button
-        startIcon={<ForestIcon />}
-        variant="contained"
-        color="primary"
-        onClick={() => getFilteredData()}
-      >Buscar</Button>
-    </Box>
+        </Grid>
+        <Grid item xs={3} p={1}>
+          <Button
+            startIcon={<ForestIcon />}
+            variant="contained"
+            color="primary"
+            onClick={() => getFilteredData()}
+          >Buscar</Button>
+        </Grid>
+      </Grid>
+    </Grid>
   )
 }

@@ -56,7 +56,7 @@ export default function AsyncAutocomplete({ value, setValue }) {
         setOpen(false);
       }}
       isOptionEqualToValue={(option, value) => option?.properties?.code === value?.properties?.code}
-      getOptionLabel={(option) => option.properties ? `${option?.properties?.code} ${option?.properties?.name}` : ""}
+      getOptionLabel={(option) => option.properties ? `${option?.properties?.name} ➖ ${option.labels.join(", ")}` : ""}
       options={options}
       loading={loading}
       value={value}
