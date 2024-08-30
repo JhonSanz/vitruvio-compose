@@ -18,6 +18,7 @@ import TextField from '@mui/material/TextField';
 import { ParamsPicker } from '../prototype/page';
 import Fab from '@mui/material/Fab';
 import AddIcon from '@mui/icons-material/Add';
+import Tooltip from '@mui/material/Tooltip';
 
 
 function ShowNodeDetails({
@@ -306,22 +307,24 @@ const TreeNode = ({
           }
         </div>
       )}
-      <div style={{ display: "flex", justifyContent: "start", alignItems: "center" }}>
+      <div style={{ display: "flex", justifyContent: "start", alignItems: "center", border: "1px dotted gray", width: "fit-content" }}>
         <div style={{ marginRight: "10px", marginLeft: "10px" }}><b>{theIndex}</b></div>
         <div style={{ display: "flex", alignItems: "center" }}>
-          <div style={{ marginRight: "10px", width: "150px", backgroundColor: "#fafafa" }}>
+          <div style={{ marginRight: "10px", width: "80px", backgroundColor: "#fafafa" }}>
             {
               node.labels.map(item => (
-                <div style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}>
-                  <small style={{ fontStyle: "italic" }}>{item}</small>
-                  <br />
-                </div>
+                <Tooltip title={item}>
+                  <div style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}>
+                    <small style={{ fontStyle: "italic" }}>{item}</small>
+                    <br />
+                  </div>
+                </Tooltip>
               ))
             }
           </div>
           <div style={{
             marginRight: "10px",
-            width: "250px",
+            maxWidth: "250px",
             textOverflow: "ellipsis",
             overflow: "hidden",
             whiteSpace: "nowrap",
