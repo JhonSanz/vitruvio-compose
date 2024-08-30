@@ -143,22 +143,42 @@ def delete_all_relations(*, code: str):
         return []
 
 
-def update_node_labels(*, code: str, labels: List[str]):
-    remove_labels_query = """
-        MATCH (n {code: $code})
-        WITH n, labels(n) AS existingLabels
-        FOREACH (label IN existingLabels | REMOVE n:label)
+def remove_all_labels_from_node(*, node_code: str):
+    query = """
+    MATCH (n {code: $code})
+    RETURN labels(n) AS labels
     """
+    result, metadata = db.cypher_query(query, {'code': node_code})
+    
+    if result:
+        labels = result[0][0]
+        if labels:
+            labels_str = ':'.join(labels)
+            remove_labels_query = f"""
+                MATCH (n {{code: $code}})
+                REMOVE n:{labels_str}
+            """
+
+            db.cypher_query(remove_labels_query, {'code': node_code})
+            return
+        raise Exception(f"No labels found on node with code: {node_code}")
+    raise Exception(f"No node found with code: {node_code}")
+
+
+def update_node_labels(*, code: str, labels: List[str]):
+    try:
+        remove_all_labels_from_node(node_code=code)
+    except Exception as e:
+        raise Exception(f"Failed to update node: {e}")
     
     query = "MATCH (n {code: $code}) "
     query += "SET " + ", ".join(f"n:{label}" for label in labels)
     params = { "code": code }
+    
     try:
-        db.cypher_query(remove_labels_query, params)
         result, _ = db.cypher_query(query, params)
     except Exception as e:
-        print(f"Failed to delete relations of node {code} \n {str(e)}")
-        return []
+        raise Exception(f"Failed to delete relations of node {code} \n {str(e)}")
 
 
 def update_node_props(*, code: str, details: List[NodeDetails]):
@@ -224,7 +244,7 @@ def filter_nodes(*, params: NodeFiltering):
     if params.label:
         conditions.append(f"n:{params.label}")
     if params.name:
-        conditions.append(f"n.name CONTAINS '{params.name}'")
+        conditions.append(f"(n.name CONTAINS '{params.name}' OR n.synonym CONTAINS '{params.name}')")
     if params.param_name and params.param_value:
         conditions.append(f"n.{params.param_name} CONTAINS '{params.param_value}'")
 

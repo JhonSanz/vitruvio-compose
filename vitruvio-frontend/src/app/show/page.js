@@ -19,6 +19,7 @@ import { ParamsPicker } from '../prototype/page';
 import Fab from '@mui/material/Fab';
 import AddIcon from '@mui/icons-material/Add';
 import Tooltip from '@mui/material/Tooltip';
+import GLOBAL_CATEGORIES from '@/utils/constant';
 
 
 function ShowNodeDetails({
@@ -91,7 +92,7 @@ function ShowNodeDetails({
   async function handleDeleteNode() {
     try {
       const result = await fetchBackend("/graph/delete-node", "POST", { node_code: data.code });
-      // window.location.reload()
+      window.location.reload()
     } catch (error) {
       console.error('Error fetching root nodes:', error);
     }
@@ -137,10 +138,15 @@ function ShowNodeDetails({
             currentDetails.map((item, index) => (
               <div key={item.name} style={{ display: 'flex', marginBottom: '8px', height: "40px", borderBottom: "1px dotted gray" }}>
                 <div style={{ width: "100%", fontWeight: 'bold' }}>{item.name.charAt(0).toUpperCase() + item.name.slice(1)}:</div>
-                <div style={{ width: "100%" }}>{item.value}</div>
                 <div style={{ width: "100%" }}>
                   {
-                    item.name !== "code" && <IconButton aria-label="delete" color="secondary">
+                    item.name === "globalCategory" ?
+                      `${GLOBAL_CATEGORIES.find(cat => cat.name === item.value).icon} ${item.value}` : item.value
+                  }
+                </div>
+                <div style={{ width: "100%" }}>
+                  {
+                    !["code", "globalCategory"].includes(item.name) && <IconButton aria-label="delete" color="secondary">
                       <DeleteIcon onClick={() => handleDeleteDetail(index)} />
                     </IconButton>
                   }
@@ -308,12 +314,14 @@ const TreeNode = ({
         </div>
       )}
       <div style={{ display: "flex", justifyContent: "start", alignItems: "center", border: "1px dotted gray", width: "fit-content" }}>
-        <div style={{ marginRight: "10px", marginLeft: "10px" }}><b>{theIndex}</b></div>
+        <div style={{ marginRight: "10px", marginLeft: "10px" }}>
+          {GLOBAL_CATEGORIES.find(cat => cat.name === node.properties.globalCategory)?.icon}
+        </div>
         <div style={{ display: "flex", alignItems: "center" }}>
           <div style={{ marginRight: "10px", width: "80px", backgroundColor: "#fafafa" }}>
             {
               node.labels.map(item => (
-                <Tooltip title={item}>
+                <Tooltip title={item} sx={{ fontSize: "20px" }}>
                   <div style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}>
                     <small style={{ fontStyle: "italic" }}>{item}</small>
                     <br />

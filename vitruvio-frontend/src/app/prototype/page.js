@@ -16,7 +16,7 @@ import UnitsPicker from '@/components/prototype/unitsPicker';
 import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch';
-
+import GLOBAL_CATEGORIES from '@/utils/constant';
 
 export function ParamsPicker({
   size = "medium",
@@ -161,6 +161,7 @@ export default function Prototype({
   const mercarRef = useRef(null);
   const [disabledButton, setDisabledButton] = useState(false);
   const [itemType, setItemType] = useState("fundamental");
+  const [globalCategory, setGlobalCategory] = useState(GLOBAL_CATEGORIES[0].name);
   const [formInsumo, setFormInsumo] = useState({
     name: "",
     // code: "",
@@ -184,7 +185,7 @@ export default function Prototype({
     const finalBody = {
       ...formInsumo,
       type: formInsumo["type"].split(","),
-      nodeParams: [...paramsForm],
+      nodeParams: [...paramsForm, { name: "globalCategory", value: globalCategory }],
       nodeRelations: []
     }
     switch (itemType) {
@@ -240,6 +241,22 @@ export default function Prototype({
           paramsForm={paramsForm}
           setParamsForm={setParamsForm}
         />
+      </Box>
+      <Box mb={2}>
+        <FormControl fullWidth>
+          <InputLabel id="demo-simple-select-label">Categoria global</InputLabel>
+          <Select
+            labelId="demo-simple-select-label"
+            id="demo-simple-select"
+            value={globalCategory}
+            label="Categoria global"
+            onChange={(e) => setGlobalCategory(e.target.value)}
+          >
+            {
+              GLOBAL_CATEGORIES.map((item) => <MenuItem value={item.name}>{item.icon} {item.name}</MenuItem>)
+            }
+          </Select>
+        </FormControl>
       </Box>
       <Box mb={2}>
         <TextField

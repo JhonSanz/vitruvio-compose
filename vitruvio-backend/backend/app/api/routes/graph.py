@@ -50,6 +50,7 @@ def create_insumo(data_model: DataInsumos):
 @router.post("/update-node-relations")
 def update_node_relations(data_model: NodeUpdateRelations):
     try:
+        print("AQUI ESTOY 1")
         crud_graph.update_node_relations(data_model=data_model)
         return 200
     except Exception as e:
